@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "question": "What is Muniz?",
+        "answer": "Muniz is an offline app designed to help parents manage their baby’s immunizations and vaccinations. It uses a Realm database to securely store and track vaccination records, schedule appointments, and send reminders."
+    },
+    {
+        "id": 2,
+        "question": "How much does the Muniz app cost?",
+        "answer": "The Muniz app is available for a one-time purchase price of £0.50."
+    },
+    {
+        "id": 3,
+        "question": "What features does Muniz offer?",
+        "answer": "Muniz includes features such as vaccination scheduling, appointment reminders, vaccination history tracking, and educational resources about vaccines, all accessible offline."
+    },
+    {
+        "id": 4,
+        "question": "What hardware do I need to use Muniz?",
+        "answer": "Muniz is compatible with standard smartphones and tablets. No special hardware is required."
+    },
+    {
+        "id": 5,
+        "question": "Is Muniz available in languages other than English?",
+        "answer": "Currently, Muniz is available only in English. We are planning to add more languages in future updates."
+    },
+    {
+        "id": 6,
+        "question": "How can I get support if I have questions or issues?",
+        "answer": "For support, you can use the 'Help' section within the app or contact us through the information provided on our website."
+    },
+    {
+        "id": 7,
+        "question": "Can I share my data with healthcare providers using Muniz?",
+        "answer": "Muniz operates offline and does not support direct syncing with healthcare providers. However, you can manually export and share vaccination records from the app."
+    },
+    {
+        "id": 8,
+        "question": "How do I update my baby’s vaccination schedule in Muniz?",
+        "answer": "To update the vaccination schedule, go to the 'Schedule' section of the app and enter the new dates or vaccine types as recommended by your healthcare provider."
+    },
+    {
+        "id": 9,
+        "question": "What should I do if I miss a vaccination appointment?",
+        "answer": "If you miss an appointment, you can reschedule it through the app. Muniz will send reminders for upcoming and missed appointments to help you stay on track."
+    },
+    {
+        "id": 10,
+        "question": "How does Muniz protect my data?",
+        "answer": "Muniz uses the Realm database with encryption to securely store your data on your device. Your information is protected and only accessible to you and those you choose to share it with."
+    }
+]
