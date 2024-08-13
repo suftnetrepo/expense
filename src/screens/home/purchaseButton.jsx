@@ -19,7 +19,7 @@ const PurchaseButton = () => {
     const { purchaseHandler } = useInAppPurchase();
 
     return (
-        <StyledStack absolute bottom={8} right={16} transparent>
+        <StyledStack absolute bottom={8} right={16} transparent borderColor={theme.colors.transparent} backgroundColor={theme.colors.transparent}>
             <StyledSpacer flex={1} />
             <StyledButton backgroundColor={theme.colors.orange[400]} onPress={ async() => await purchaseHandler()}>
                 <XStack justifyContent='flex-end' alignItems='center' paddingHorizontal={16} paddingVertical={8}>

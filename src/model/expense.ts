@@ -6,12 +6,12 @@ import { getRealmInstance } from './store';
 import { Category, queryCategoryById } from './category';
 
 export interface Expense {
-    expense_id: string;
-    amount: 'double';
-    date: 'date';
-    category_id: 'string';
-    category?: Category | null;
-    type: 'string';
+  expense_id: string;
+  amount: number;
+  date: 'date';
+  category_id: string;
+  category?: Category | null;
+  type?: string;
 }
 
 const insertExpense = async (
@@ -37,12 +37,12 @@ const insertExpense = async (
 const queryAllExpenses = async (): Promise<Expense[]> => {
     try {
         const realm = await getRealmInstance();
-        const expenses = realm.objects<Expense>('Expense').sorted('date');
+        const expenses = realm.objects<Expense>('Expense').sorted('date', true);
 
         const cards = await Promise.all(
             expenses.map(async expense => {
                 const category = (await queryCategoryById(expense.category_id)) || null;
-
+              
                 return {
                     expense_id: expense.expense_id,
                     category_id: expense.category_id,
@@ -58,6 +58,39 @@ const queryAllExpenses = async (): Promise<Expense[]> => {
     } catch (error) {
         throw error;
     }
+};
+
+const queryExpensesByPages = async (
+  page: number,
+  ITEMS_PER_PAGE: number = 10
+): Promise<Expense[]> => {
+  try {
+    const realm = await getRealmInstance();  
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+    const expenses = realm
+      .objects<Expense>('Expense')
+      .sorted('date', true)
+      .slice(offset, offset + ITEMS_PER_PAGE);
+
+    const cards = await Promise.all(
+      expenses.map(async expense => {
+        const category = (await queryCategoryById(expense.category_id)) || null;
+
+        return {
+          expense_id: expense.expense_id,
+          category_id: expense.category_id,
+          category: category,
+          type: expense.type,
+          amount: expense.amount,
+          date: expense.date,
+        };
+      })
+    );
+
+    return cards;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const queryExpensesByDateRange = async (
@@ -101,8 +134,7 @@ const updateExpense = async (expense: Expense): Promise<Expense> => {
                     'Expense',
                     expense.expense_id
                 );
-                if (updatedExpense) {
-                    (updatedExpense.expense_id = expense.expense_id),
+                if (updatedExpense) {                   
                         (updatedExpense.category_id = expense.category_id),
                         (updatedExpense.type = expense.type),
                         (updatedExpense.amount = expense.amount),
@@ -141,9 +173,10 @@ const deleteExpense = async (expense_id: string): Promise<boolean> => {
 };
 
 export {
-    insertExpense,
-    updateExpense,
-    queryAllExpenses,
-    queryExpensesByDateRange,
-    deleteExpense
+  insertExpense,
+  updateExpense,
+  queryAllExpenses,
+  queryExpensesByDateRange,
+  deleteExpense,
+  queryExpensesByPages,
 };

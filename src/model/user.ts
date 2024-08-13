@@ -11,6 +11,7 @@ export interface User {
   username: string;
   password: string;
   role: string;
+  currency: string;
   pass_code: number;
 }
 
@@ -20,6 +21,7 @@ const insertUser = async (
   username: string,
   password: string,
   role: string,
+  currency: string,
   pass_code: number
 ): Promise<User> => {
   const realm = await getRealmInstance();
@@ -33,8 +35,8 @@ const insertUser = async (
           role,
           pass_code,
           first_name,
-          last_name
-
+          last_name,
+          currency,
         });
         resolve(user);
       });
@@ -51,6 +53,7 @@ const updateUser = async (
   username: string,
   password: string,
   role: string,
+  currency: string,
   pass_code: number
 ): Promise<User> => {
   const realm = await getRealmInstance();
@@ -65,6 +68,7 @@ const updateUser = async (
           user.pass_code = pass_code;
           user.first_name = first_name;
           user.last_name = last_name;
+          user.currency = currency;
           resolve(user);
         } else {
           reject(new Error('User not found'));
@@ -107,6 +111,7 @@ const queryUsers = async (): Promise<User[]> => {
         pass_code: user.pass_code,
         first_name: user.first_name,
         last_name: user.last_name,
+        currency: user.currency,
       }));
       resolve(users);
     } catch (error) {

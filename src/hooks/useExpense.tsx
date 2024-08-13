@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
-import { queryAllExpenses,queryExpensesByDateRange, insertExpense,updateExpense,deleteExpense } from "../model/expense";
+import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages } from "../model/expense";
 import { Expense } from "../model/types";
 
 interface Initialize {
@@ -9,21 +9,30 @@ interface Initialize {
 	loading: boolean;
 }
 
-const useExpenses = () => {
+const PAGE_SIZE = 10;
+
+const useExpenses = (currentPage: number) => {	
+	const [hasMore, setHasMore] = useState(true);
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
 		loading: true,
 	});
 
-	async function loadHandler() {
+	async function loadHandler(currentPage: number) {
 		try {
-			const result = await queryAllExpenses();
-			setData(prev => ({
-				...prev,
-				data: result,
-				loading: false,
-			}));
+			const result = await queryExpensesByPages(currentPage, PAGE_SIZE);
+			setData(prev => {
+				const newData = Array.isArray(prev.data) ? [...prev.data, ...result] : [...result];
+				return {
+					...prev,
+					data: newData,
+					loading: false,
+				};
+			});
+			if (result.length < PAGE_SIZE) {
+				setHasMore(false);
+			}
 		} catch (error) {
 			setData({
 				data: null,
@@ -50,9 +59,9 @@ const useExpenses = () => {
 		}
 	}
 
-	useEffect(() => {		
-		loadHandler();
-	}, []);
+	useEffect(() => {
+		loadHandler(currentPage);
+	}, [currentPage]);
 
 	const resetHandler = () => {
 		setData({
@@ -66,7 +75,8 @@ const useExpenses = () => {
 		...data,
 		loadHandler,
 		resetHandler,
-		loadExpensesByDateRange
+		loadExpensesByDateRange,
+		hasMore
 	};
 };
 
@@ -76,7 +86,7 @@ const useInsertExpense = () => {
 		error: null,
 		loading: false,
 	});
-	
+
 	const insertHandler = async (
 		expense: Expense
 	) => {

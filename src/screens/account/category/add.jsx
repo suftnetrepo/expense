@@ -9,7 +9,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { categoryRules } from "./validatorRules";
 import { useInsertCategory } from "../../../hooks/useCategory";
 import { ShowToast } from "../../../components/toast";
-import ColorPicker from "../../../components/colorPicker";
 
 const AddCategory = () => {
   const navigator = useNavigation()
@@ -57,8 +56,7 @@ const AddCategory = () => {
         paddingHorizontal={16}
       >
         <StyledSpacer marginVertical={8} />
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-          <ColorPicker color={theme.colors.purple[900]} onPress={(color) => setFields({ ...fields, color_code: color })} />
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>       
           <StyledInput
             label={'Name'}
             keyboardType='default'

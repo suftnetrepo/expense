@@ -8,7 +8,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { categoryRules } from "./validatorRules";
 import { useUpdateCategory } from "../../../hooks/useCategory";
-import ColorPicker from "../../../components/colorPicker";
 
 const EditCategory = () => {
   const navigator = useNavigation()
@@ -66,7 +65,7 @@ const EditCategory = () => {
       >
         <StyledSpacer marginVertical={8} />
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-          <ColorPicker color={fields.color_code || theme.colors.purple[900]} onPress={(color) => setFields({ ...fields, color_code: color })} />
+         
           <StyledInput
             label={'Name'}
             keyboardType='default'

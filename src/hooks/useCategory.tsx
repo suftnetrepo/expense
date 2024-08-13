@@ -2,29 +2,40 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
-import { queryAllCategories, queryCategoriesByStatus, queryCategoryById, deleteCategory, insertCategory, updateCategory } from "../model/category";
+import { queryAllCategories, queryCategoriesByPage, queryCategoriesByStatus, queryCategoryById, deleteCategory, insertCategory, updateSingleCategory, updateCategory } from "../model/category";
 import { Category } from "../model/types";
+
 interface Initialize {
 	data: Category[] | null | Category | [] | boolean;
 	error: Error | null;
 	loading: boolean;
 }
 
-const useCategories = () => {
+const PAGE_SIZE = 10;
+
+const useCategories = (currentPage: number) => {
+	const [hasMore, setHasMore] = useState(true);
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
 		loading: true,
 	});
 
-	async function loadCategories() {
+	async function loadHandler(currentPage: number) {
+		
 		try {
-			const result = await queryAllCategories();
-			setData(prev => ({
-				...prev,
-				data: result,
-				loading: false,
-			}));
+			const result = await queryCategoriesByPage(currentPage, PAGE_SIZE);
+			setData(prev => {
+				const newData = Array.isArray(prev.data) ? [...prev.data, ...result] : [...result];
+				return {
+					...prev,
+					data: newData,
+					loading: false,
+				};
+			});
+			if (result.length < PAGE_SIZE) {
+				setHasMore(false);
+			}
 		} catch (error) {
 			setData({
 				data: null,
@@ -35,8 +46,8 @@ const useCategories = () => {
 	}
 
 	useEffect(() => {		
-		loadCategories();
-	}, []);
+		loadHandler(currentPage);
+	}, [currentPage]);
 
 	const resetHandler = () => {
 		setData({
@@ -44,14 +55,13 @@ const useCategories = () => {
 			error: null,
 			loading: false,
 		});
-	}
-
-	
+	}	
 
 	return {
 		...data,		
-		loadCategories,
-		resetHandler
+		loadHandler,
+		resetHandler,
+		hasMore
 	};
 };
 
@@ -63,6 +73,7 @@ const useQueryCategoriesByStatus = () => {
 	});
 
 	async function loadCategoriesByStatus(status: number) {
+		setData((prev) => ({ ...prev, loading: true }));
 		try {
 			const result = await queryCategoriesByStatus(status);
 			setData({
@@ -91,22 +102,13 @@ const useQueryCategoriesByStatus = () => {
 			loading: false,
 		});
 	}
-	const allCategory: Category = {
-		color_code: '',
-		category_id: "-1",
-		name: 'All',
-		status: 1
-	}
 
-	const newData = Array.isArray(data.data) ? [allCategory, ...data.data,] : [allCategory];
-		
+			
 	return {
-		...data,
-		data: newData,		
+		...data,		
 		resetHandler
 	};
 };
-
 const useQueryCategoryById = async (category_id: string) => {
 	const [data, setData] = useState<Initialize>({
 		data: [],
@@ -200,6 +202,15 @@ const useUpdateCategory = () => {
 		loading: false,
 	});
 
+	const updateSingleCategoryHandler = async (
+		category_id: number,
+		status: number		
+	) => {		
+		setData((prev) => ({ ...prev, loading: true }));
+		const result = await updateSingleCategory(category_id, status);
+		return result
+	}
+
 	const updateCategoryHandler = async (
 		category_id: number,
 		name: string,
@@ -235,7 +246,8 @@ const useUpdateCategory = () => {
 
 	return {
 		...data,
-		updateCategory: updateCategoryHandler,
+		updateSingleCategoryHandler,
+		updateCategory: updateCategoryHandler,		
 		resetHandler
 	};
 };

@@ -9,14 +9,17 @@ import AddUser from '../screens/account/user/add'
 import EditUser from '../screens/account/user/edit'
 import HelpCenter from '../screens/account/helpCenter';
 import FAQ from '../screens/account/faq';
-import AddChild from '../screens/children/add';
-import EditChild from '../screens/children/edit';
+import AddChild from '../screens/expense/add';
+import EditChild from '../screens/expense/edit';
 import Card from '../screens/card';
 import AddCard from '../screens/card/add';
 import EditCard from '../screens/card/edit';
 import MyCard from '../screens/myCard';
 import Articles from '../screens/article';
 import ArticleDetails from '../screens/article/articleDetails';
+import Category from '../screens/account/category';
+import AddCategory from '../screens/account/category/add';
+import EditCategory from '../screens/account/category/edit';
 
 const Stack = createStackNavigator();
 function Navigator() {
@@ -28,7 +31,28 @@ function Navigator() {
         options={{
           headerShown: false,
         }}
-      />  
+      /> 
+      <Stack.Screen
+        name="add-category"
+        component={AddCategory}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="edit-category"
+        component={EditCategory}
+        options={{
+          headerShown: false,
+        }}
+      /> 
+      <Stack.Screen
+        name="categories"
+        component={Category}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="articles"
         component={Articles}
@@ -65,14 +89,14 @@ function Navigator() {
         }}
       />  
       <Stack.Screen
-        name="add-child"
+        name="add-expense"
         component={AddChild}
         options={{
           headerShown: false,
         }}
       />  
       <Stack.Screen
-        name="edit-child"
+        name="edit-expense"
         component={EditChild}
         options={{
           headerShown: false,

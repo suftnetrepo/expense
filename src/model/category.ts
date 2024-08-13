@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable no-useless-catch */
+/* eslint-disable prettier/prettier */
 import { guid } from '../utils/help';
 import { getRealmInstance } from './store';
 
@@ -75,6 +77,36 @@ const queryCategoriesByStatus = async (status: number): Promise<Category[]> => {
   });
 };
 
+const queryCategoriesByPage = async (
+  page: number,
+  ITEMS_PER_PAGE: number = 10
+): Promise<Category[]> => {
+  try {
+    const realm = await getRealmInstance();
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+     console.log('....................offset', offset);
+  console.log(
+    '.................... offset + ITEMS_PER_PAGE',
+    offset + ITEMS_PER_PAGE
+  );
+    const categories = realm
+      .objects<Category>('Category')
+      .sorted('name', true)
+      .slice(offset, offset + ITEMS_PER_PAGE)
+      .map(category => ({
+        category_id: category.category_id,
+        name: category.name,
+        status: category.status,
+        color_code: category.color_code,
+      }));
+
+      console.log('....................categories', categories.length);
+    return categories;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const queryCategoryById = async (category_id: string): Promise<Category | null> => {
   const realm = await getRealmInstance();
   return new Promise((resolve, reject) => {
@@ -93,6 +125,32 @@ const queryCategoryById = async (category_id: string): Promise<Category | null> 
             }
           : null
       );
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const updateSingleCategory = async (
+  category_id: number,
+  status: number, 
+): Promise<boolean> => {
+  const realm = await getRealmInstance();
+  return new Promise((resolve, reject) => {
+    try {
+      realm.write(() => {
+        const category = realm.objectForPrimaryKey<Category>(
+          'Category',
+          category_id
+        );
+
+        if (category) {       
+          category.status = status;         
+          resolve(true);
+        } else {
+          reject(false);
+        }
+      });
     } catch (error) {
       reject(error);
     }
@@ -169,4 +227,6 @@ export {
   queryCategoryById,
   deleteCategory,
   queryCategoriesByStatus,
+  updateSingleCategory,
+  queryCategoriesByPage,
 };

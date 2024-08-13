@@ -15,6 +15,7 @@ export const UserSchema: ObjectSchema = {
     first_name: 'string',
     last_name: 'string',
     uri: 'string?',
+    currency: 'string?',
     pass_code: 'int',
     status: {type: 'int', default: 0},
     role: 'string',
@@ -25,11 +26,11 @@ export const ExpenseSchema: ObjectSchema = {
   name: 'Expense',
   primaryKey: 'expense_id',
   properties: {
-    expense_id: 'int',
+    expense_id: 'string',
     amount: 'double',
     date: 'date',
     category_id: 'string',
-    type: 'string',
+    type: 'string?',
   },
 };
 
@@ -85,7 +86,14 @@ const CardSchema = {
 };
 
 const {useRealm, useQuery, RealmProvider} = createRealmContext({
-  schema: [UserSchema, CardSchema, ChildSchema, VaccineSchema, ExpenseSchema],
+  schema: [
+    UserSchema,
+    CardSchema,
+    ChildSchema,
+    VaccineSchema,
+    ExpenseSchema,
+    CategorySchema,
+  ],
   deleteRealmIfMigrationNeeded: true,
 });
 
@@ -95,11 +103,12 @@ const schema = [
   ChildSchema,
   VaccineSchema,
   ExpenseSchema,
+  CategorySchema,
 ];
 
 const RealmOptions = () => {
   return {
-    path: 'z__expense___z.realm',
+    path: '_expense____z.realm',
     schema: schema,
     schemaVersion: SCHEMA_VERSION,
     migration 

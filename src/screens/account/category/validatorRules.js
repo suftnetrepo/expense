@@ -2,7 +2,7 @@
 // Sample validation rules for a registration form
 const reset = {
   name: "",
-  color_code: "",
+  color_code: "#6d28d9",
   status: 0,
 }
 const categoryRules = {

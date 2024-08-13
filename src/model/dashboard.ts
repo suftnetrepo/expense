@@ -9,6 +9,11 @@ export interface WeeklyTransactionsData {
   total: number;
 }
 
+export interface TransactionsData {
+  value: number;
+  date: 'date';
+}
+
 const getDailyTransaction = async (): Promise<number> => {
     const realm = await getRealmInstance();
     return new Promise((resolve, reject) => {
@@ -28,6 +33,37 @@ const getDailyTransaction = async (): Promise<number> => {
             reject(error);
         } 
     });
+};
+
+const getTransactions = async (period: string): Promise<TransactionsData[]> => {
+  const realm = await getRealmInstance();
+  return new Promise((resolve, reject) => {
+    try {
+      const now = new Date();
+      let startDate;
+
+      if (period === 'week') {
+        startDate = new Date(now.setDate(now.getDate() - 7));
+      } else if (period === 'month') {
+        startDate = new Date(now.setMonth(now.getMonth() - 1));
+      } else if (period === 'year') {
+        startDate = new Date(now.setFullYear(now.getFullYear() - 1));
+      }
+
+      const expenses = realm
+        .objects<Expense>('Expense')
+        .filtered('date >= $0', startDate);
+
+      const transformedData = expenses.map(expense => ({
+        value: expense.amount,
+        date: expense.date,
+      }));
+
+      resolve(transformedData);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
 const getDailyTransactionPercentageChange = async (): Promise<number> => {
@@ -228,5 +264,6 @@ export {
   getDailyTransaction,
   getPreviousDayTransaction,
   getDailyTransactionTrend,
-  getWeeklySales
+  getWeeklySales,
+  getTransactions,
 };

@@ -9,8 +9,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { fontStyles, theme } from '../configs/theme';
 import Home from '../screens/home';
 import Account from '../screens/account';
-import Children from '../screens/children'
-import Articles from '../screens/article';
+import Expense from '../screens/expense'
 
 const Tab = createBottomTabNavigator();
 const Tabs = ({ state, descriptors, navigation }) => {
@@ -67,22 +66,14 @@ export default function BottomTabs() {
         }
       }} />
 
-      <Tab.Screen name='Children' component={Children} options={{
+      <Tab.Screen name='Expense' component={Expense} options={{
         tabBarIcon: ({ size, color }) => {
           return (
-            <Icon color={color} size={size} name='account-child' />
+            <Icon color={color} size={size} name='cash-plus' />
           )
         }
       }} />      
-
-      <Tab.Screen name='Articles' component={Articles} options={{
-        tabBarIcon: ({ size, color }) => {
-          return (
-            <Icon color={color} size={size} name='book-alphabet' />
-          )
-        }
-      }} />        
-
+     
       <Tab.Screen name='Settings' component={Account} options={{
         tabBarIcon: ({ size, color }) => {
           return (

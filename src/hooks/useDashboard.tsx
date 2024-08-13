@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import {
 	getDailyTransaction,
 	getDailyTransactionPercentageChange,
-	getBestSellingProducts,
 	getMonthlySales,
-	getLowStocks,
 	getWeeklyTransactions,
 	getDailyTransactionTrend,
-	ProductSalesData,
 	WeeklyTransactionsData,
-	getWeeklySales
+	getWeeklySales,
+	TransactionsData,
+	getTransactions
+	
 } from "../model/dashboard";
 
 interface Initialize {
@@ -22,8 +22,8 @@ interface Initialize {
 		| number
 		| string
 		| Record<string, unknown>
-		| ProductSalesData[]
-		| WeeklyTransactionsData[];
+		| WeeklyTransactionsData[]
+		| TransactionsData[]
 	error: Error | null;
 	loading: boolean;
 }
@@ -102,38 +102,6 @@ const useTransactionTrend = () => {
 	};
 };
 
-const useBestSellingProducts = (limit: number) => {
-	const [data, setData] = useState<Initialize>({
-		data: [],
-		error: null,
-		loading: true,
-	});
-
-	useEffect(() => {
-		async function load() {
-			try {
-				const result = await getBestSellingProducts(limit);
-				setData((prev) => ({
-					...prev,
-					data: result,
-					loading: false,
-				}));
-			} catch (error) {
-				setData({
-					data: null,
-					error: error as Error,
-					loading: false,
-				});
-			}
-		}
-		load();
-	}, []);
-
-	return {
-		...data
-	};
-};
-
 const useDailyTransactionPercentageChange = () => {
 	const [data, setData] = useState<Initialize>({
 		data: [],
@@ -198,37 +166,6 @@ const useMonthlySales = () => {
 	};
 };
 
-const useLowStocks = (threshold: number = 1) => {
-	const [data, setData] = useState<Initialize>({
-		data: [],
-		error: null,
-		loading: true,
-	});
-
-	useEffect(() => {
-		async function load() {
-			try {
-				const result = await getLowStocks(threshold);
-				setData((prev) => ({
-					...prev,
-					data: result,
-					loading: false,
-				}));
-			} catch (error) {
-				setData({
-					data: null,
-					error: error as Error,
-					loading: false,
-				});
-			}
-		}
-		load();
-	}, []);
-
-	return {
-		...data
-	};
-};
 
 const useWeeklyTransactions = () => {
 	const [data, setData] = useState<Initialize>({
@@ -294,13 +231,45 @@ const useWeeklySales = () => {
 	};
 };
 
+const useTransactions = (period :string) => {
+	const [data, setData] = useState<Initialize>({
+		data: [],
+		error: null,
+		loading: true,
+	});
+
+	async function load(period: string) {
+		try {
+			const result = await getTransactions(period);
+			setData((prev) => ({
+				...prev,
+				data: result,
+				loading: false,
+			}));
+		} catch (error) {
+			setData({
+				data: null,
+				error: error as Error,
+				loading: false,
+			});
+		}
+	}
+
+	useEffect(() => {		
+		load(period);
+	}, [period]);
+
+	return {
+		...data
+	};
+};
+
 export {
 	useWeeklyTransactions,
-	useLowStocks,
 	useDailyTransaction,
-	useBestSellingProducts,
 	useTransactionTrend,
 	useDailyTransactionPercentageChange,
 	useMonthlySales,
-	useWeeklySales
+	useWeeklySales,
+	useTransactions
 };

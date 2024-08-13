@@ -12,6 +12,17 @@ const StyledStack = styled(View, {
         flexDirection: 'row'
     },
     variants: {
+        borderLeftColor: (color = theme.colors.gray[6800]) => {           
+            return {
+                borderLeftColor: color,
+                borderLeftWidth: 4,
+                borderTopColor: theme.colors.gray[300],
+                borderRightColor: theme.colors.gray[300],
+                borderBottomColor: theme.colors.gray[300],
+                borderTopWidth: 1,
+                borderRightWidth: 1,
+                borderBottomWidth: 1, }
+        },
         status: {
             '0': {
                 borderLeftColor: theme.colors.red[400],
