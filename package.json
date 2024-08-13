@@ -30,7 +30,6 @@
     "fluent-styles": "^1.30.0",
     "react": "18.2.0",
     "react-native": "0.74.2",
-    "react-native-bluetooth-state-manager": "^1.3.5",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-fs": "^2.20.0",

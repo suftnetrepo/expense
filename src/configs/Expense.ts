@@ -1,5 +1,6 @@
-{
-    "expenses": [
+/* eslint-disable prettier/prettier */
+
+ export const CATEGORY = [
         "Rent",
         "Mortgage Payment",
         "Property Taxes",
@@ -101,4 +102,3 @@
         "Trash Removal",
         "Heating Oil"
     ]
-}
