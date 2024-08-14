@@ -1,4 +1,4 @@
-package com.suftnet.muniz
+package com.suftnet.emira
 
 import android.app.Application
 import com.facebook.react.PackageList

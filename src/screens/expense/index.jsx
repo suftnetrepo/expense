@@ -90,10 +90,7 @@ const Expense = () => {
   const [page, setPage] = useState(1);
   const { data, error, loading, loadHandler, resetHandler, loadExpensesByDateRange, hasMore } = useExpenses(page);
   const { deleteHandler, error: deleteError } = useDeleteExpense();
-
-  console.log("................data", data?.length)
-  console.log("................page", page)
-
+  
   const handleStartDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setShowStartPicker(false);
@@ -114,7 +111,7 @@ const Expense = () => {
   const onConfirm = useCallback(() => {
     deleteHandler(expense?.expense_id).then(async (result) => {
       if (result) {
-        loadHandler(page);
+        setPage(1)
       }
       setIsDialogVisible(false);
     });

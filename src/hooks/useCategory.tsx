@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
-import { queryAllCategories, queryCategoriesByPage, queryCategoriesByStatus, queryCategoryById, deleteCategory, insertCategory, updateSingleCategory, updateCategory } from "../model/category";
+import { queryAllCategories, queryCategoriesByStatus, queryCategoryById, deleteCategory, insertCategory, updateSingleCategory, updateCategory } from "../model/category";
 import { Category } from "../model/types";
 
 interface Initialize {
@@ -11,9 +11,7 @@ interface Initialize {
 	loading: boolean;
 }
 
-const PAGE_SIZE = 10;
-
-const useCategories = (currentPage: number) => {
+const useCategories = () => {
 	const [hasMore, setHasMore] = useState(true);
 	const [data, setData] = useState<Initialize>({
 		data: [],
@@ -21,21 +19,18 @@ const useCategories = (currentPage: number) => {
 		loading: true,
 	});
 
-	async function loadHandler(currentPage: number) {
+	async function loadHandler() {
 		
 		try {
-			const result = await queryCategoriesByPage(currentPage, PAGE_SIZE);
-			setData(prev => {
-				const newData = Array.isArray(prev.data) ? [...prev.data, ...result] : [...result];
+			const result = await queryAllCategories();
+			setData(prev => {			
 				return {
 					...prev,
-					data: newData,
+					data: result,
 					loading: false,
 				};
 			});
-			if (result.length < PAGE_SIZE) {
-				setHasMore(false);
-			}
+			return true
 		} catch (error) {
 			setData({
 				data: null,
@@ -46,8 +41,8 @@ const useCategories = (currentPage: number) => {
 	}
 
 	useEffect(() => {		
-		loadHandler(currentPage);
-	}, [currentPage]);
+		loadHandler();
+	}, []);
 
 	const resetHandler = () => {
 		setData({
@@ -60,8 +55,7 @@ const useCategories = (currentPage: number) => {
 	return {
 		...data,		
 		loadHandler,
-		resetHandler,
-		hasMore
+		resetHandler		
 	};
 };
 

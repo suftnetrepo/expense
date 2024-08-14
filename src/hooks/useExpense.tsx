@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
-import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages } from "../model/expense";
+import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages, queryRecentExpenses } from "../model/expense";
 import { Expense } from "../model/types";
 
 interface Initialize {
@@ -213,4 +213,38 @@ const useDeleteExpense = () => {
 	};
 };
 
-export { useDeleteExpense, useInsertExpense, useExpenses, useUpdateExpense };
+const useRecentExpenses = () => {
+	const [data, setData] = useState<Initialize>({
+		data: [],
+		error: null,
+		loading: true,
+	});
+
+	async function load() {
+		try {
+			const result = await queryRecentExpenses();
+			setData((prev) => ({
+				...prev,
+				data: result,
+				loading: false,
+			}));
+		} catch (error) {
+			setData({
+				data: null,
+				error: error as Error,
+				loading: false,
+			});
+		}
+	}
+
+	useEffect(() => {
+		load();
+	}, []);
+
+	return {
+		...data,
+		load
+	};
+};
+
+export { useRecentExpenses, useDeleteExpense, useInsertExpense, useExpenses, useUpdateExpense };

@@ -1,29 +1,69 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable react/prop-types */
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 import React, { useState } from "react";
-import { validate, StyledSpinner, YStack, StyledOkDialog, StyledHeader, StyledSafeAreaView, StyledSpacer, StyledText, StyledButton } from 'fluent-styles';
-import { theme } from "../../configs/theme";
-import { useNavigation } from "@react-navigation/native";
+import { validate, StyledSpinner, YStack, XStack, StyledOkDialog, StyledHeader, StyledSafeAreaView, StyledSpacer, StyledText, StyledButton } from 'fluent-styles';
+import { fontStyles, theme } from "../../configs/theme";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { expenseRules } from "./validatorRules";
-import { StyledDropdown } from "../../components/dropdown";
 import { ShowToast } from "../../components/toast";
 import { dateConverter } from "../../utils/help";
 import { StyledMIcon } from "../../components/icon";
 import { StyledInput } from "../../components/form";
 import { useInsertExpense } from "../../hooks/useExpense";
 import { useQueryCategoriesByStatus } from "../../hooks/useCategory";
+import { ScrollView } from "react-native";
 
-const AddChild = () => {
+export const RenderCategories = ({ categories, setFields, fields, errorMessages  })=> {
+  return(
+    <>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <XStack paddingHorizontal={8} paddingVertical={6} >
+          {
+            ([{ category_id: 1, name: "Add Category", color_code: theme.colors.warmGray[600] }, ...categories] || []).map((category, index) => (
+              <XStack key={index}>
+                <StyledButton borderRadius={32} borderColor={category.color_code || theme.colors.gray[600]} backgroundColor={category.color_code || theme.colors.gray[600]} onPress={() => {
+                  if (category.category_id === 1) {
+                    navigator.navigate("categories", {
+                      from: 'add-expense'
+                    })
+                  } else {
+                    setFields({ ...fields, category_id: category.category_id })
+                  }
+                }}>
+                  <StyledText fontFamily={fontStyles.Roboto_Regular} fontSize={theme.fontSize.small} color={theme.colors.gray[1]} paddingHorizontal={20} paddingVertical={10}>{category.name}</StyledText>
+                </StyledButton>
+                <StyledSpacer marginHorizontal={4} />
+              </XStack>
+            ))
+          }
+        </XStack>
+      </ScrollView>
+      {
+        errorMessages?.category_id && (
+          <>
+            <StyledText marginHorizontal={8} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.small} color={theme.colors.pink[500]} >
+              {errorMessages?.category_id?.message}
+            </StyledText>
+          </>
+        )
+      }
+    </>
+  )
+}
+
+const AddExpense = () => {
   const navigator = useNavigation()
   const [errorMessages, setErrorMessages] = useState({})
   const [fields, setFields] = useState(expenseRules.fields)
   const [showPicker, setShowPicker] = useState(false);
   const { data: categories } = useQueryCategoriesByStatus()
   const { insertHandler, error, loading, resetHandler } = useInsertExpense()
-  
+ 
   const handleDateChange = (event, selectedDate) => {
     setShowPicker(false)
     const currentDate = selectedDate || startDate;
@@ -47,11 +87,16 @@ const AddChild = () => {
       result && handleResult()
     })
   }
-
+ 
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.navigate("bottom-tabs", { screen: 'Children' })} title='Add Expense' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'bottom-tabs', state: { routes: [{ name: 'Expense' }] } }],
+          })
+        )} title='Add Expense' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />
@@ -61,19 +106,10 @@ const AddChild = () => {
         flex={1}
         backgroundColor={theme.colors.gray[100]}
         paddingHorizontal={16}
-      >
+      >       
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-          <StyledSpacer paddingVertical={8} />
-          <StyledDropdown
-            placeholder={'Select a Category'}
-            label={'Category'}
-            items={(categories || []).map((category) => ({ value: category.category_id, label: category.name }))}
-            value={fields.category_id}
-            onSelectItem={e => setFields({ ...fields, category_id: e.value })}
-            error={!!errorMessages?.category_id}
-            errorMessage={errorMessages?.category_id?.message}
-            listMode='MODAL'
-          />
+          <StyledSpacer paddingVertical={4} />   
+          <RenderCategories categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
           <StyledInput
             label={'Amount'}
             keyboardType='decimal-pad'
@@ -139,4 +175,4 @@ const AddChild = () => {
   )
 }
 
-export default AddChild
+export default AddExpense

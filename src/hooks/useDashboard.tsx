@@ -11,7 +11,8 @@ import {
 	WeeklyTransactionsData,
 	getWeeklySales,
 	TransactionsData,
-	getTransactions
+	getTransactions,
+	getExpenseSums
 	
 } from "../model/dashboard";
 
@@ -260,9 +261,45 @@ const useTransactions = (period :string) => {
 	}, [period]);
 
 	return {
-		...data
+		...data,
+		load
 	};
 };
+
+const useAggregates = () => {
+	const [data, setData] = useState<Initialize>({
+		data: [],
+		error: null,
+		loading: true,
+	});
+
+	async function load() {
+		try {
+			const result = await getExpenseSums();
+			setData((prev) => ({
+				...prev,
+				data: result,
+				loading: false,
+			}));
+		} catch (error) {
+			setData({
+				data: null,
+				error: error as Error,
+				loading: false,
+			});
+		}
+	}
+
+	useEffect(() => {
+		load();
+	}, []);
+
+	return {
+		...data,
+		load
+	};
+};
+
 
 export {
 	useWeeklyTransactions,
@@ -271,5 +308,6 @@ export {
 	useDailyTransactionPercentageChange,
 	useMonthlySales,
 	useWeeklySales,
-	useTransactions
+	useTransactions,
+	useAggregates
 };

@@ -9,11 +9,9 @@ import { StyledToast } from './src/components/toast'
 import AppProvider from './src/hooks/appContext'
 import RadioProvider from './src/hooks/radioContext';
 import { withIAPContext } from 'react-native-iap';
-import useScheduleNotifications from './src/hooks/useScheduleNotifications';
 import { theme } from './src/configs/theme';
 
 function App () {
-   useScheduleNotifications();
    
    return (
     <RealmProvider>

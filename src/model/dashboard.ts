@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prettier/prettier */
-import {getRealmInstance} from './store';
+import {getRealmInstance, Realm} from './store';
 import {Expense} from './expense';
 
 export interface WeeklyTransactionsData {
@@ -42,11 +42,11 @@ const getTransactions = async (period: string): Promise<TransactionsData[]> => {
       const now = new Date();
       let startDate;
 
-      if (period === 'week') {
+      if (period === 'W') {
         startDate = new Date(now.setDate(now.getDate() - 7));
-      } else if (period === 'month') {
+      } else if (period === 'M') {
         startDate = new Date(now.setMonth(now.getMonth() - 1));
-      } else if (period === 'year') {
+      } else if (period === 'Y') {
         startDate = new Date(now.setFullYear(now.getFullYear() - 1));
       }
 
@@ -255,6 +255,90 @@ const getDailyTransactionTrend = (): Promise<{
   });
 };
 
+async function getExpenseSums() {
+  const realm = await getRealmInstance();
+  const now = new Date();
+ 
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+  const weeklySum = realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfWeek)
+    .sum('amount');
+
+  const monthlySum = realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfMonth)
+    .sum('amount');
+
+  const yearlySum = realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfYear)
+    .sum('amount');
+
+  const weeklyData = getWeeklyData(realm, startOfWeek);
+  
+  const monthlyData = getMonthlyData(realm, startOfMonth);
+
+  const yearlyData = getYearlyData(realm, startOfYear);
+
+  return {
+    weeklySum: weeklySum || 0, 
+    monthlySum: monthlySum || 0,
+    yearlySum: yearlySum || 0,
+    weeklyData,
+    monthlyData,
+    yearlyData,
+  };
+}
+
+function getWeeklyData(realm: Realm, startOfWeek : Date) {
+  return realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfWeek)
+    .sorted('date', false) 
+    .slice(-7) 
+    .map(expense => ({
+      amount: expense.amount,
+      date: expense.date,
+    }));
+}
+
+function getMonthlyData(realm: Realm, startOfMonth: Date) {
+  return realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfMonth)
+    .sorted('date', false)
+    .map(expense => ({
+      amount: expense.amount,
+      date: expense.date,
+    }));
+}
+
+function getYearlyData(realm: Realm, startOfYear: Date) {
+  const monthlyData = Array(12)
+    .fill(0)
+    .map((_, month) => ({
+      amount: 0,
+      date: new Date(startOfYear.getFullYear(), month, 1),
+    }));
+
+  realm
+    .objects('Expense')
+    .filtered('date >= $0', startOfYear)
+    .forEach(expense => {
+      const monthIndex = expense.date.getMonth();
+      monthlyData[monthIndex].amount += expense.amount;
+    });
+
+  return monthlyData;
+}
 
 
 export {
@@ -266,4 +350,5 @@ export {
   getDailyTransactionTrend,
   getWeeklySales,
   getTransactions,
+  getExpenseSums,
 };

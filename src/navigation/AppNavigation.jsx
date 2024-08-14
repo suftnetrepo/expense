@@ -9,14 +9,8 @@ import AddUser from '../screens/account/user/add'
 import EditUser from '../screens/account/user/edit'
 import HelpCenter from '../screens/account/helpCenter';
 import FAQ from '../screens/account/faq';
-import AddChild from '../screens/expense/add';
-import EditChild from '../screens/expense/edit';
-import Card from '../screens/card';
-import AddCard from '../screens/card/add';
-import EditCard from '../screens/card/edit';
-import MyCard from '../screens/myCard';
-import Articles from '../screens/article';
-import ArticleDetails from '../screens/article/articleDetails';
+import AddExpense from '../screens/expense/add';
+import EditExpense from '../screens/expense/edit';
 import Category from '../screens/account/category';
 import AddCategory from '../screens/account/category/add';
 import EditCategory from '../screens/account/category/edit';
@@ -52,57 +46,21 @@ function Navigator() {
         options={{
           headerShown: false,
         }}
-      />
-      <Stack.Screen
-        name="articles"
-        component={Articles}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="my-card"
-        component={MyCard}
-        options={{
-          headerShown: false,
-        }}
-      />  
-      <Stack.Screen
-        name="edit-card"
-        component={EditCard}
-        options={{
-          headerShown: false,
-        }}
-      />  
-      <Stack.Screen
-        name="add-card"
-        component={AddCard}
-        options={{
-          headerShown: false,
-        }}
-      />  
-      <Stack.Screen
-        name="cards"
-        component={Card}
-        options={{
-          headerShown: false,
-        }}
-      />  
+      />             
       <Stack.Screen
         name="add-expense"
-        component={AddChild}
+        component={AddExpense}
         options={{
           headerShown: false,
         }}
       />  
       <Stack.Screen
         name="edit-expense"
-        component={EditChild}
+        component={EditExpense}
         options={{
           headerShown: false,
         }}
-      />    
-     
+      />         
       <Stack.Screen
         name="faq"
         component={FAQ}
@@ -116,14 +74,7 @@ function Navigator() {
         options={{
           headerShown: false,
         }}
-      />
-      <Stack.Screen
-        name="article-details"
-        component={ArticleDetails}
-        options={{
-          headerShown: false,
-        }}
-      />       
+      />           
       
       <Stack.Screen
         name="edit-user"

@@ -4,17 +4,17 @@
 import React, { useState, useEffect } from "react";
 import { validate, StyledSpinner, YStack, StyledOkDialog, StyledHeader, StyledSafeAreaView, StyledSpacer, StyledText, StyledButton } from 'fluent-styles';
 import { theme } from "../../configs/theme";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, CommonActions } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { expenseRules } from "./validatorRules";
-import { StyledDropdown } from "../../components/dropdown";
 import { dateConverter } from "../../utils/help";
 import { StyledMIcon } from "../../components/icon";
 import { StyledInput } from "../../components/form";
 import { resetStackInTab } from "../../components/helper";
 import { useQueryCategoriesByStatus } from "../../hooks/useCategory";
 import { useUpdateExpense } from "../../hooks/useExpense";
+import { RenderCategories } from "./add";
 
 const EditExpense = () => {
   const navigator = useNavigation()
@@ -51,14 +51,21 @@ const EditExpense = () => {
     }
 
     await updateHandler({ ...fields, amount : parseFloat(fields.amount)}).then(async (result) => {
-      result && resetStackInTab(navigator, 'bottom-tabs', 'Children')
+      result && resetStackInTab(navigator, 'bottom-tabs', 'Expense')
     })
   } 
 
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.navigate("bottom-tabs", { screen: 'Children' })} title='Edit Expense' icon cycleProps={{
+        <StyledHeader.Header onPress={() => {
+          navigator.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'bottom-tabs', state: { routes: [{ name: 'Expense' }] } }],
+            })
+          );
+        }} title='Edit Expense' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />
@@ -71,16 +78,7 @@ const EditExpense = () => {
       >
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <StyledSpacer paddingVertical={8} />         
-          <StyledDropdown
-            placeholder={'Select a Category'}
-            label={'Category'}
-            items={(categories || []).map((category) => ({ value: category.category_id, label: category.name }))}
-            value={fields.category_id}
-            onSelectItem={e => setFields({ ...fields, category_id: e.value })}
-            error={!!errorMessages?.category_id}
-            errorMessage={errorMessages?.category_id?.message}
-            listMode='MODAL'
-          />
+          <RenderCategories categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
           <StyledInput
             label={'Amount'}
             keyboardType='decimal-pad'

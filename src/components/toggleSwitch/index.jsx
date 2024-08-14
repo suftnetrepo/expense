@@ -4,10 +4,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import React, { useState } from "react"
-import { YStack, XStack, StyledConfirmDialog, StyledCard, StyledCycle, StyledButton, StyledSeparator, StyledBadge, StyledHeader, StyledSafeAreaView, StyledSpinner, StyledOkDialog, StyledSpacer, StyledText } from 'fluent-styles';
+import { XStack, StyledButton, StyledText } from 'fluent-styles';
 import { theme } from "../../configs/theme";
 
-const StyledToggleSwitch = ({ defaultLabel = "Cash", nextLabel = "Card", onPress }) => {
+const StyledToggleSwitch = ({ defaultLabel = "D", onPress }) => {
     const [selected, setSelected] = useState(defaultLabel)
 
     const onSwitch = (label) => {
@@ -17,10 +17,16 @@ const StyledToggleSwitch = ({ defaultLabel = "Cash", nextLabel = "Card", onPress
     return (
         <XStack justifyContent='space-between' borderRadius={35} paddingVertical={0} paddingHorizontal={0} borderColor={theme.colors.gray[300]} backgroundColor={theme.colors.gray[300]} alignItems='center'  >
             <StyledButton  borderRadius={35} selected={selected === defaultLabel} flex={1} onPress={() => { onSwitch(defaultLabel) }}>
-                <StyledText paddingVertical={16} paddingHorizontal={16}  color={theme.colors.gray[1]} selected={selected === defaultLabel} >{defaultLabel}</StyledText>
+                <StyledText paddingVertical={8} paddingHorizontal={16} color={theme.colors.gray[1]} selected={selected === defaultLabel}>{defaultLabel}</StyledText>
             </StyledButton>
-            <StyledButton  borderRadius={35} selected={selected === nextLabel} flex={1} onPress={() => { onSwitch(nextLabel) }}>
-                <StyledText paddingVertical={16} paddingHorizontal={16} color={theme.colors.gray[800]} selected={selected === nextLabel}>{nextLabel}</StyledText>
+            <StyledButton  borderRadius={35} selected={selected === "W"} flex={1} onPress={() => { onSwitch("W") }}>
+                <StyledText paddingVertical={8} paddingHorizontal={16} color={theme.colors.gray[800]} selected={selected === "W"}>W</StyledText>
+            </StyledButton>
+            <StyledButton borderRadius={35} selected={selected === "M"} flex={1} onPress={() => { onSwitch("M") }}>
+                <StyledText paddingVertical={8} paddingHorizontal={16} color={theme.colors.gray[800]} selected={selected === "M"}>M</StyledText>
+            </StyledButton>
+            <StyledButton borderRadius={35} selected={selected === "Y"} flex={1} onPress={() => { onSwitch("Y") }}>
+                <StyledText paddingVertical={8} paddingHorizontal={16} color={theme.colors.gray[800]} selected={selected === "Y"}>Y</StyledText>
             </StyledButton>
         </XStack>
     )

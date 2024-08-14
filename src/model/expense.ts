@@ -60,6 +60,36 @@ const queryAllExpenses = async (): Promise<Expense[]> => {
     }
 };
 
+
+const queryRecentExpenses = async (): Promise<Expense[]> => {
+  try {
+    const realm = await getRealmInstance();
+    const expenses = realm
+      .objects<Expense>('Expense')
+      .sorted('date', true)
+      .slice(0, 7);
+
+    const cards = await Promise.all(
+      expenses.map(async expense => {
+        const category = (await queryCategoryById(expense.category_id)) || null;
+
+        return {
+          expense_id: expense.expense_id,
+          category_id: expense.category_id,
+          category: category,
+          type: expense.type,
+          amount: expense.amount,
+          date: expense.date,
+        };
+      })
+    );
+
+    return cards;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const queryExpensesByPages = async (
   page: number,
   ITEMS_PER_PAGE: number = 10
@@ -179,4 +209,5 @@ export {
   queryExpensesByDateRange,
   deleteExpense,
   queryExpensesByPages,
+  queryRecentExpenses,
 };

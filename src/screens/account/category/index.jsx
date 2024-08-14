@@ -9,7 +9,7 @@ import {
 } from 'fluent-styles';
 import { theme, fontStyles } from '../../../configs/theme';
 import { StyledMIcon } from '../../../components/icon';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 import { useCategories, useDeleteCategory, useUpdateCategory } from '../../../hooks/useCategory';
 import { FlatList } from 'react-native';
 import { toWordCase } from '../../../utils/help';
@@ -48,17 +48,18 @@ const RenderCard = React.memo(({ item, onDelete, onUpdateStatus, onEdit }) => {
 
 const Category = () => {
   const navigator = useNavigation();
+  const route = useRoute()
+  const { from } = route.params
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [category, setCategory] = useState();
-  const [page, setPage] = useState(1);
-  const { data, error, loading, loadHandler, resetHandler, hasMore } = useCategories(page);
+  const { data, error, loading, loadHandler, resetHandler } = useCategories();
   const { deleteCategory, error: deleteError } = useDeleteCategory();
   const { updateSingleCategoryHandler } = useUpdateCategory();
 
   const onConfirm = useCallback(() => {
     deleteCategory(category?.category_id).then(async (result) => {
       if (result) {
-        loadHandler(page);
+        loadHandler();
       }
       setIsDialogVisible(false);
     });
@@ -76,22 +77,27 @@ const Category = () => {
   const onUpdateStatus = (item) => {
     updateSingleCategoryHandler(item.category_id, (item.status === 1 ? 0 : 1)).then((result) => {
       if (result) {
-        loadHandler(1);
+        loadHandler();
       }
     });
   };
-
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      setPage(prevPage => prevPage + 1);
-    }
-  };
-
+ 
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }}>
         <StyledHeader.Header
-          onPress={() => navigator.navigate("bottom-tabs", { screen: 'Settings' })}
+          onPress={() => {             
+            if (from) {
+              navigator.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: from }],
+                })
+              );
+            }else {
+              navigator.goBack()
+            }
+           }}
           title='Categories'
           icon
           cycleProps={{
@@ -122,10 +128,7 @@ const Category = () => {
                 onEdit={() => onEdit(item)}
                 onUpdateStatus={() => onUpdateStatus(item)}
               />
-            )}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={loading && <StyledSpinner />}
+            )}          
           />
         </GestureHandlerRootView>
       </YStack>

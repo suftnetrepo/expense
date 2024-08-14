@@ -28,7 +28,7 @@ const HelpCenter = () => {
                     marginRight: 8
                 }} />
             </StyledHeader>
-            <YStack flex={1} justifyContent='center' alignItems='center' backgroundColor={theme.colors.gray[50]}>
+            <YStack flex={1} justifyContent='center' alignItems='center' backgroundColor={theme.colors.gray[100]}>
                 <YStack width={'80%'} backgroundColor={theme.colors.gray[1]} borderRadius={8} paddingHorizontal={16} paddingVertical={16} >
                     <StyledSpacer marginVertical={8} />
                     <StyledImage source={require("../../../assets/img/logo.png")} ></StyledImage>
@@ -37,7 +37,7 @@ const HelpCenter = () => {
                         fontFamily={fontStyles.Roboto_Regular}
                         fontSize={theme.fontSize.normal}
                     >
-                        Thank you for using Muniz and for your interest in contacting
+                        Thank you for using Emira and for your interest in contacting
                         us. We're always here to help and we appreciate your feedback.
                     </StyledText>
                     <StyledSpacer marginVertical={8} />

@@ -45,52 +45,9 @@ export const CategorySchema: ObjectSchema = {
   },
 };
 
-const ChildSchema = {
-  name: 'Child',
-  primaryKey: 'child_id',
-  properties: {
-    child_id: 'string',
-    first_name: 'string',
-    last_name: 'string',
-    uri: 'string?',
-    dateOfBirth: 'date',
-    gender: 'string',
-    genotype: 'string?',
-  },
-};
-
-const VaccineSchema = {
-  name: 'Vaccine',
-  primaryKey: 'vaccine_id',
-  properties: {
-    vaccine_id: 'string',
-    name: 'string',
-    description: 'string?',
-    dosage: 'string',
-  },
-};
-
-const CardSchema = {
-  name: 'Card',
-  primaryKey: 'card_id',
-  properties: {
-    card_id: 'string',
-    child_id: 'string',
-    vaccine_id: 'string',
-    date: 'date',
-    time: 'date',
-    provider: 'string',
-    reminder: 'int?',
-    status: 'int',
-  },
-};
-
 const {useRealm, useQuery, RealmProvider} = createRealmContext({
   schema: [
-    UserSchema,
-    CardSchema,
-    ChildSchema,
-    VaccineSchema,
+    UserSchema,   
     ExpenseSchema,
     CategorySchema,
   ],
@@ -98,17 +55,14 @@ const {useRealm, useQuery, RealmProvider} = createRealmContext({
 });
 
 const schema = [
-  UserSchema,
-  CardSchema,
-  ChildSchema,
-  VaccineSchema,
+  UserSchema, 
   ExpenseSchema,
   CategorySchema,
 ];
 
 const RealmOptions = () => {
   return {
-    path: '_expense____z.realm',
+    path: 'x_expense_z.realm',
     schema: schema,
     schemaVersion: SCHEMA_VERSION,
     migration 

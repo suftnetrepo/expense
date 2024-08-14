@@ -71,9 +71,7 @@ const Login = () => {
                 >
                   Login User
                 </StyledBadge>
-              </StyledButton>
-
-             
+              </StyledButton>             
 
               <StyledButton onPress={async () => clearSeedData()}>
                 <StyledBadge
@@ -101,7 +99,7 @@ const Login = () => {
         <XStack justifyContent='flex-start' alignItems='center'>
           <StyledMIcon size={32} name='info' color={theme.colors.cyan[500]} />
           <StyledText paddingHorizontal={8} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.large} color={theme.colors.gray[800]}>
-            Welcome to Muniz
+            Welcome to Emira
           </StyledText>
         </XStack>
         <StyledText fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.medium} color={theme.colors.gray[800]}>
@@ -138,7 +136,7 @@ const Login = () => {
               >
                 <StyledSpacer marginVertical={16} />
                 <StyledText paddingHorizontal={8} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.xlarge} color={theme.colors.gray[800]}>
-                  Welcome to Muniz
+                  Welcome to Emira
                 </StyledText>
                 <StyledText paddingHorizontal={8} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.medium} color={theme.colors.gray[600]}>
                   Sign in to continue.

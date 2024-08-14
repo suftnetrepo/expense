@@ -79,9 +79,9 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }   
 
-    namespace "com.suftnet.muniz"
+    namespace "com.suftnet.emira"
     defaultConfig {
-        applicationId "com.suftnet.muniz"
+        applicationId "com.suftnet.emira"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 11
@@ -98,9 +98,9 @@ android {
         }
 
           release {
-            storeFile file('muniz.jks')
+            storeFile file('emira.jks')
             storePassword "Kcmkcm12345!"
-            keyAlias "muniz-alias"
+            keyAlias "emira-alias"
             keyPassword "Kcmkcm12345!"
         }
     }
