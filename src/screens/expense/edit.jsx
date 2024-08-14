@@ -78,7 +78,7 @@ const EditExpense = () => {
       >
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <StyledSpacer paddingVertical={8} />         
-          <RenderCategories categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
+          <RenderCategories navigator={navigator} from='edit-expense' categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
           <StyledInput
             label={'Amount'}
             keyboardType='decimal-pad'
