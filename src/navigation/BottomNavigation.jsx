@@ -32,13 +32,13 @@ const Tabs = ({ state, descriptors, navigation }) => {
 
             return (
               <StyledButton borderColor={theme.colors.gray[100]} key={index} onPress={() => handlePress()} >
-                <XStack justifyContent='space-between'  borderRadius={32} backgroundColor={focused ? theme.colors.blueGray[800] : theme.colors.gray[1]} alignItems='center' paddingHorizontal={12} paddingVertical={4}>
-                  <BarIcon focused={focused} size={24} color={focused ? theme.colors.gray[1] : theme.colors.gray[800]} />
+                <XStack justifyContent='space-between' borderRadius={32} borderWidth={1} borderColor={focused ? theme.colors.blueGray[800] : theme.colors.gray[400]} backgroundColor={focused ? theme.colors.blueGray[800] : theme.colors.gray[1]} alignItems='center' paddingHorizontal={12} paddingVertical={4}>
+                  <BarIcon focused={focused} size={32} color={focused ? theme.colors.gray[1] : theme.colors.gray[800]} />
                   {
                     focused && (
                       <>
                         <StyledSpacer marginHorizontal={2} />
-                        <StyledText fontFamily={fontStyles.Roboto_Regular} fontSize={theme.fontSize.medium} fontWeight={theme.fontWeight.bold} color={focused ? theme.colors.gray[1] : theme.colors.gray[800]}>{route.name}</StyledText>
+                        <StyledText fontFamily={fontStyles.Roboto_Regular} fontSize={theme.fontSize.normal} fontWeight={theme.fontWeight.bold} color={focused ? theme.colors.gray[1] : theme.colors.gray[800]}>{route.name}</StyledText>
                       </>
                     )
                   }

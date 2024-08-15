@@ -49,7 +49,7 @@ const RenderCard = React.memo(({ item, onDelete, onUpdateStatus, onEdit }) => {
 const Category = () => {
   const navigator = useNavigation();
   const route = useRoute()
-  const { from } = route.params
+  const { from, expense } = route.params
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [category, setCategory] = useState();
   const { data, error, loading, loadHandler, resetHandler } = useCategories();
@@ -91,7 +91,7 @@ const Category = () => {
               navigator.dispatch(
                 CommonActions.reset({
                   index: 0,
-                  routes: [{ name: from }],
+                  routes: [{ name: from, params: { expense } }],
                 })
               );
             }else {

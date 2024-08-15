@@ -18,7 +18,7 @@ import { useInsertExpense } from "../../hooks/useExpense";
 import { useQueryCategoriesByStatus } from "../../hooks/useCategory";
 import { ScrollView } from "react-native";
 
-export const RenderCategories = ({ from, navigator, categories, setFields, fields, errorMessages  })=> {
+export const RenderCategories = ({ from, expense, navigator, categories, setFields, fields, errorMessages  })=> {
   return(
     <>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -29,7 +29,8 @@ export const RenderCategories = ({ from, navigator, categories, setFields, field
                 <StyledButton borderRadius={32} borderColor={category.color_code || theme.colors.gray[600]} backgroundColor={category.color_code || theme.colors.gray[600]} onPress={() => {
                   if (category.category_id === 1) {
                     navigator.navigate("categories", {
-                      from
+                      from,
+                      expense
                     })
                   } else {
                     setFields({ ...fields, category_id: category.category_id })
@@ -109,7 +110,7 @@ const AddExpense = () => {
       >       
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
           <StyledSpacer paddingVertical={4} />   
-          <RenderCategories navigator={navigator} from='add-expense' categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
+          <RenderCategories navigator={navigator} expense="expense" from='add-expense' categories={categories} setFields={setFields} fields={fields} errorMessages={errorMessages} />
           <StyledInput
             label={'Amount'}
             keyboardType='decimal-pad'

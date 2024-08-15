@@ -4,7 +4,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   YStack,
   XStack,
@@ -63,15 +63,14 @@ const Home = () => {
             {toWordCase(user.first_name)} {toWordCase(user.last_name)}
           </StyledText>
         </YStack>
-
         <XStack>
           {
             !purchase_status && (
               <StyledButton backgroundColor={theme.colors.orange[400]} onPress={async () => await purchaseHandler()}>
-                <XStack justifyContent='flex-end' alignItems='center' paddingHorizontal={16} paddingVertical={8}>
+                <XStack justifyContent='flex-end' alignItems='center' paddingHorizontal={12} >
                   <StyledMIcon size={24} name='apps' color={theme.colors.gray[1]} />
-                  <StyledSpacer marginHorizontal={4} />
-                  <StyledText color={theme.colors.gray[1]} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.large} >
+                  <StyledSpacer marginHorizontal={2} />
+                  <StyledText color={theme.colors.gray[1]} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.normal} >
                     Buy
                   </StyledText>
                 </XStack>
@@ -127,6 +126,7 @@ const Home = () => {
           <RenderHeader />
         </StyledHeader.Full>
       </StyledHeader> 
+      <StyledSpacer marginVertical={4} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <YStack flex={1} marginHorizontal={8}>
           <StyledToggleSwitch onPress={(label) => setPeriod(label)} />

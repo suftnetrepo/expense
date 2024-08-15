@@ -188,7 +188,7 @@ const Login = () => {
         </StyledButton>
         <StyledSpacer marginVertical={4} />   
         {
-          purchase_status && (
+          !purchase_status && (
             <XStack justifyContent='flex-end' alignItems='center'>
               <StyledButton link backgroundColor={theme.colors.cyan[500]} onPress={() => navigator.navigate("keypad", {
                 recovery_password: true
