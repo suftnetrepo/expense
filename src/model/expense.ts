@@ -8,7 +8,7 @@ import { Category, queryCategoryById } from './category';
 export interface Expense {
   expense_id: string;
   amount: number;
-  date: 'date';
+  date: Date;
   category_id: string;
   category?: Category | null;
   type?: string;
@@ -37,7 +37,7 @@ const insertExpense = async (
 const queryAllExpenses = async (): Promise<Expense[]> => {
     try {
         const realm = await getRealmInstance();
-        const expenses = realm.objects<Expense>('Expense').sorted('date', true);
+        const expenses = realm.objects<Expense>('Expense').sorted('date', true).slice(0, 30);
 
         const cards = await Promise.all(
             expenses.map(async expense => {

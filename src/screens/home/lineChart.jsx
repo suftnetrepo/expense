@@ -15,21 +15,20 @@ import {
     useAggregates, 
 } from '../../hooks/useDashboard';
 import { LineChart } from 'react-native-gifted-charts';
-import { useWindowDimensions } from 'react-native';
 import { useAppContext } from '../../hooks/appContext';
 import { formatCurrency } from '../../utils/help';
 
-const ExpenseChart = ({ period }) => {
-    const { width } = useWindowDimensions()
+const ExpenseChart = ({ period }) => {   
     const { user } = useAppContext()
     const { data: expenseData } = useAggregates()
-    
+       
     let chartData = [];
     let labels = [];
     
     if (period === 'M') {
-        chartData = expenseData.monthlyData?.map(expense => ({
-            value: expense.amount,
+        chartData = expenseData?.monthlyData?.map((amount, index) => ({
+            value: parseFloat(amount.toFixed(2)),
+            label: (index + 1).toString(),
         }));
         
     } else if (period === 'Y') 
@@ -96,19 +95,19 @@ const ExpenseChart = ({ period }) => {
             {chartData?.length > 0 && (
                 <LineChart
                     initialSpacing={0}
-                    data={chartData}
-                    // width={width - 50}
-                    spacing={width / (chartData.length - 1)}
-               
-                    thickness={3}
+                    data={chartData}                               
+                    spacing={22}
+                    thickness={2}
+                    color={theme.colors.indigo[700]}
                     hideRules
-                    hideYAxisText
-                    yAxisColor="#0BA5A4"
-                    showVerticalLines
-                    verticalLinesColor="rgba(14,164,164,0.5)"
-                    xAxisColor="#0BA5A4"
-                    color="#916aff"
-                    curved={true}
+                    hideDataPoints= { true}
+                    xAxisThickness={0}
+                    yAxisThickness={0}
+                    highlightedRange={{
+                        from: 5,
+                        to: 12,
+                        color: 'green',
+                    }}
                     showXAxisIndices
                     xAxisIndicesHeight={2}
                     xAxisLabelTextStyle={{ color: 'gray', fontSize: 10 }}

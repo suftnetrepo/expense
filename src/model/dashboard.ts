@@ -11,7 +11,7 @@ export interface WeeklyTransactionsData {
 
 export interface TransactionsData {
   value: number;
-  date: 'date';
+  date: Date;
 }
 
 const getDailyTransaction = async (): Promise<number> => {
@@ -284,7 +284,9 @@ async function getExpenseSums() {
 
   const weeklyData = getWeeklyData(realm, startOfWeek);
   
-  const monthlyData = getMonthlyData(realm, startOfMonth);
+  const monthlyData = getMonthlyData(realm);
+
+  console.log('...............monthlyData', monthlyData);
 
   const yearlyData = getYearlyData(realm, startOfYear);
 
@@ -310,34 +312,47 @@ function getWeeklyData(realm: Realm, startOfWeek : Date) {
     }));
 }
 
-function getMonthlyData(realm: Realm, startOfMonth: Date) {
-  return realm
+function getMonthlyData(realm: Realm) {
+  const today = new Date();
+  const currentMonth = today.getMonth(); // 0-indexed (0 = January, 11 = December)
+  const currentYear = today.getFullYear();
+  const expenses = realm
     .objects('Expense')
-    .filtered('date >= $0', startOfMonth)
-    .sorted('date', false)
-    .map(expense => ({
-      amount: expense.amount,
-      date: expense.date,
-    }));
+    .filtered(
+      'date >= $0 AND date < $1',
+      new Date(currentYear, currentMonth, 1),
+      new Date(currentYear, currentMonth + 1, 1)
+    );
+
+ const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+ const dailyExpenses = new Array(daysInMonth).fill(0);
+
+ expenses.forEach(expense => {
+   const day = new Date(expense.date as Date).getDate();
+   dailyExpenses[day - 1] += expense.amount;
+ });
+
+ return dailyExpenses;
 }
 
 function getYearlyData(realm: Realm, startOfYear: Date) {
-  const monthlyData = Array(12)
-    .fill(0)
-    .map((_, month) => ({
-      amount: 0,
-      date: new Date(startOfYear.getFullYear(), month, 1),
-    }));
+ const endOfYear = new Date(startOfYear.getFullYear() + 1, 0, 1); // January 1st of the next year
+ const monthlyData = Array(12)
+   .fill(0)
+   .map((_, month) => ({
+     amount: 0,
+     date: new Date(startOfYear.getFullYear(), month, 1),
+   }));
 
-  realm
-    .objects('Expense')
-    .filtered('date >= $0', startOfYear)
-    .forEach(expense => {
-      const monthIndex = expense.date.getMonth();
-      monthlyData[monthIndex].amount += expense.amount;
-    });
+ realm
+   .objects('Expense')
+   .filtered('date >= $0 AND date < $1', startOfYear, endOfYear)
+   .forEach(expense => {
+     const monthIndex = (expense.date as Date).getMonth();
+     monthlyData[monthIndex].amount += (expense.amount as number);
+   });
 
-  return monthlyData;
+ return monthlyData;
 }
 
 

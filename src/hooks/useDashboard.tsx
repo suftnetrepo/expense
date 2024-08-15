@@ -25,6 +25,7 @@ interface Initialize {
 		| Record<string, unknown>
 		| WeeklyTransactionsData[]
 		| TransactionsData[]
+		| number[]
 	error: Error | null;
 	loading: boolean;
 }
@@ -275,7 +276,7 @@ const useAggregates = () => {
 
 	async function load() {
 		try {
-			const result = await getExpenseSums();
+			const result = await getExpenseSums();		
 			setData((prev) => ({
 				...prev,
 				data: result,

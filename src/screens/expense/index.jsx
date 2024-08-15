@@ -14,7 +14,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { FlatList } from 'react-native';
 import { dateConverter, formatCurrency, toWordCase } from '../../utils/help';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useExpenses, useDeleteExpense } from '../../hooks/useExpense';
+import { useDeleteExpense, useAllExpenses } from '../../hooks/useExpense';
 import { StyledStack } from '../../components/stack';
 import { DownloadExpense } from './downloadPayment';
 import { useAppContext } from '../../hooks/appContext';
@@ -87,10 +87,9 @@ const Expense = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
-  const [page, setPage] = useState(1);
-  const { data, error, loading, loadHandler, resetHandler, loadExpensesByDateRange, hasMore } = useExpenses(page);
+  const { data, error, loading, loadHandler, resetHandler, loadExpensesByDateRange } = useAllExpenses();
   const { deleteHandler, error: deleteError } = useDeleteExpense();
-  
+    
   const handleStartDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setShowStartPicker(false);
@@ -103,15 +102,14 @@ const Expense = () => {
     setEndDate(currentDate);
   };
 
-  const handleFilter = async () => {
-    setPage(1)  
+  const handleFilter = async () => {    
     setShowFilter(!showFilter)
   }
 
   const onConfirm = useCallback(() => {
-    deleteHandler(expense?.expense_id).then(async (result) => {
+    deleteHandler(expense?.expense_id).then(async (result) => {   
       if (result) {
-        setPage(1)
+        loadHandler()
       }
       setIsDialogVisible(false);
     });
@@ -130,13 +128,7 @@ const Expense = () => {
       }
     });
   };
-
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      setPage(prevPage => prevPage + 1);
-    }
-  };
-
+ 
   const RenderDatePicker = () => {
     return (
       <YStack marginHorizontal={8}>
@@ -231,9 +223,7 @@ const Expense = () => {
                 onEdit={() => onEdit(item)}
               />
             )}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={loading && <StyledSpinner />}
+            extraData={data.length}           
           />
         </GestureHandlerRootView>
       </YStack>

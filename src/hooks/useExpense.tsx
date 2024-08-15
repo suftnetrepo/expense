@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
-import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages, queryRecentExpenses } from "../model/expense";
+import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages, queryRecentExpenses, queryAllExpenses } from "../model/expense";
 import { Expense } from "../model/types";
 
 interface Initialize {
@@ -79,6 +79,71 @@ const useExpenses = (currentPage: number) => {
 		hasMore
 	};
 };
+
+const useAllExpenses = () => {
+	const [data, setData] = useState<Initialize>({
+		data: [],
+		error: null,
+		loading: true,
+	});
+
+	async function loadHandler() {
+		try {
+			const result = await queryAllExpenses();
+			setData(prev => {				
+				return {
+					...prev,
+					data: result,
+					loading: false,
+				};
+			});
+			return true
+		} catch (error) {
+			setData({
+				data: null,
+				error: error as Error,
+				loading: false,
+			});
+		}
+	}
+
+	async function loadExpensesByDateRange(startDate: Date, endDate: Date) {
+		try {
+			const result = await queryExpensesByDateRange(startDate, endDate);
+			setData((prev) => ({
+				...prev,
+				data: result,
+				loading: false,
+			}));
+		} catch (error) {
+			setData({
+				data: null,
+				error: error as Error,
+				loading: false,
+			});
+		}
+	}
+
+	useEffect(() => {
+		loadHandler();
+	}, []);
+
+	const resetHandler = () => {
+		setData({
+			data: null,
+			error: null,
+			loading: false,
+		});
+	}
+
+	return {
+		...data,
+		loadHandler,
+		resetHandler,
+		loadExpensesByDateRange		
+	};
+};
+
 
 const useInsertExpense = () => {
 	const [data, setData] = useState<Initialize>({
@@ -247,4 +312,4 @@ const useRecentExpenses = () => {
 	};
 };
 
-export { useRecentExpenses, useDeleteExpense, useInsertExpense, useExpenses, useUpdateExpense };
+export { useAllExpenses, useRecentExpenses, useDeleteExpense, useInsertExpense, useExpenses, useUpdateExpense };
