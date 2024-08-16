@@ -88,24 +88,7 @@ const Home = () => {
               </StyledButton>
             )
           }         
-          <StyledSpacer marginHorizontal={2} />
-          <StyledCycle
-            paddingHorizontal={10}
-            borderWidth={1}
-            borderColor={theme.colors.gray[1]}>
-            <StyledMIcon
-              size={30}
-              name="lock-clock"
-              color={theme.colors.gray[800]}
-              onPress={() =>
-                navigate.reset({
-                  index: 0,
-                  routes: [{ name: 'keypad', params: { recovery_password: false } }],
-                })
-              }
-            />
-          </StyledCycle>
-          <StyledSpacer marginHorizontal={4} />
+          <StyledSpacer marginHorizontal={2} />               
           <StyledCycle
             paddingHorizontal={10}
             borderWidth={1}
@@ -118,7 +101,7 @@ const Home = () => {
                 navigate.dispatch(
                   CommonActions.reset({
                     index: 0,
-                    routes: [{ name: 'login' }],
+                    routes: [{ name: 'keypad' }],
                   })
                 );
               }}

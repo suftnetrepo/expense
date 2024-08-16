@@ -58,7 +58,7 @@ const useInAppPurchase = () => {
                    
                     setPurchaseStatus(true)
                     setPaymentStatus(true)
-                    await store(PURCHASED_STATUS, 1)    
+                    await store(PURCHASED_STATUS, 1)   
 
                     await finishTransaction({ purchase: currentPurchase, isConsumable: false, developerPayloadAndroid: currentPurchase?.developerPayloadAndroid });
                              
@@ -91,7 +91,7 @@ const useInAppPurchase = () => {
 
     useEffect(() => {       
         async function load() {           
-            const purchases = purchaseHistory?.filter((product) => product.productId === "muniz_upgrade_draft_test")            
+            const purchases = purchaseHistory?.filter((product) => product.productId === "emira_upgrade")            
             if (purchases.length > 0 ) {
                 await store(PURCHASED_STATUS, 1)  
                 setPurchaseStatus(true)               
@@ -112,9 +112,9 @@ const useInAppPurchase = () => {
         }
      
         try {
-            await getProducts({ skus: ['muniz_upgrade_draft_test'] })       
+            await getProducts({ skus: ['emira_upgrade'] })       
             if (products?.length > 0) {
-                await requestPurchase({ skus: ['muniz_upgrade_draft_test'] });
+                await requestPurchase({ skus: ['emira_upgrade'] });
             }
         } catch (error) {
             setData({

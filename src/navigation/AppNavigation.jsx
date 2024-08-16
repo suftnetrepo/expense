@@ -18,7 +18,7 @@ import EditCategory from '../screens/account/category/edit';
 const Stack = createStackNavigator();
 function Navigator() {
   return (
-    <Stack.Navigator initialRouteName="login">
+    <Stack.Navigator initialRouteName="keypad">
       <Stack.Screen
         name="bottom-tabs"
         component={BottomTabs}

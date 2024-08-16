@@ -2,25 +2,26 @@
 /* eslint-disable no-undef */
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
-import { YStack, XStack, StyledHeader, StyledSafeAreaView, StyledSpacer, StyledText, StyledSpinner, StyledButton } from 'fluent-styles';
+import { YStack, XStack, StyledHeader, StyledSafeAreaView, StyledBadge, StyledSpacer, StyledText, StyledSpinner, StyledButton } from 'fluent-styles';
 import { fontStyles, theme } from '../configs/theme';
 import { usePin } from '../hooks/useUser';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ShowToast } from '../components/toast';
 import { useSelector } from '@legendapp/state/react';
 import { state } from '../store';
 import { StyledMIcon } from '../components/icon';
 import { useAppContext } from '../hooks/appContext';
+import { FEATURE_FLAG } from '../feature-flags';
+import { clearSeedData, seedData } from '../model/seed';
 
 const Keypad = () => {
     const navigator = useNavigation()
     const { login } = useAppContext()
-    const route = useRoute()
-    const purchase_status = useSelector(() => state.purchase_status.get());
-    const { error, loading, loginByPin, resetHandler,recoveryHandler } = usePin()
-    const { recovery_password } = route.params
+    const { purchase_status } = useSelector(() => state.get());
+    const { error, loading, loginByPin, resetHandler, recoveryHandler } = usePin()
     const [pin, setPin] = useState('');
+    const [recovery_password, setRecovery_password] = useState(false);
 
     useEffect(() => {
         recovery_password && recoveryHandler()
@@ -32,7 +33,7 @@ const Keypad = () => {
             setPin(pin + num);
 
             if (passCode.length === 4) {
-                loginByPin(parseInt(passCode)).then(async(result) => {
+                loginByPin(parseInt(passCode)).then(async (result) => {
                     if (result) {
                         await login(result)
                         navigator.navigate("bottom-tabs")
@@ -52,16 +53,43 @@ const Keypad = () => {
     }
 
     const RenderHeader = () => {
+
         return (
-            <XStack flex={1} justifyContent='flex-end' alignItems='center' paddingHorizontal={32} paddingVertical={8}>
-                <Icon
-                    name={'exit-to-app'}
-                    size={48}
-                    color={theme.colors.gray[700]}
-                    onPress={() => {
-                        navigator.navigate("login")
-                    }}
-                />
+            <XStack flex={1} justifyContent='flex-end' alignItems='center' marginHorizontal={16} paddingVertical={8}>
+                {
+                    (FEATURE_FLAG.MOCK_STORE || !purchase_status) && (
+                        <>
+                            <StyledSpacer marginHorizontal={4} />
+                            <StyledButton onPress={async () => {
+                                await seedData()
+                            }}>
+                                <StyledBadge
+                                    color={theme.colors.orange[800]}
+                                    backgroundColor={theme.colors.orange[100]}
+                                    fontWeight={theme.fontWeight.normal}
+                                    fontSize={theme.fontSize.normal}
+                                    paddingHorizontal={10}
+                                    paddingVertical={5}
+                                >
+                                    Sample User
+                                </StyledBadge>
+                            </StyledButton>
+
+                            <StyledButton onPress={async () => clearSeedData()}>
+                                <StyledBadge
+                                    color={theme.colors.gray[800]}
+                                    backgroundColor={theme.colors.gray[100]}
+                                    fontWeight={theme.fontWeight.normal}
+                                    fontSize={theme.fontSize.normal}
+                                    paddingHorizontal={10}
+                                    paddingVertical={5}
+                                >
+                                    Clear
+                                </StyledBadge>
+                            </StyledButton>
+                        </>
+                    )
+                }
             </XStack>
         )
     }
@@ -78,9 +106,9 @@ const Keypad = () => {
         )
     }
 
-    const Notice = () => {
+    const ResetPasswordNotice = () => {
         return (
-            <YStack marginHorizontal={32} borderRadius={16} justifyContent='flex-start' paddingVertical={16} paddingHorizontal={16} alignItems='flex-start' backgroundColor={theme.colors.cyan[50]}>
+            <YStack marginHorizontal={16} marginBottom={32} borderRadius={16} justifyContent='flex-start' paddingVertical={16} paddingHorizontal={16} alignItems='flex-start' backgroundColor={theme.colors.lightBlue[50]}>
 
                 <XStack justifyContent='flex-start' alignItems='center'>
                     <StyledMIcon size={32} name='info' color={theme.colors.cyan[500]} />
@@ -95,6 +123,23 @@ const Keypad = () => {
         )
     }
 
+    const Notice = () => {
+        return (
+            <YStack marginBottom={32} marginHorizontal={16} borderRadius={16} justifyContent='flex-start' paddingVertical={16} paddingHorizontal={16} alignItems='flex-start' backgroundColor={theme.colors.lightBlue[50]}>
+
+                <XStack justifyContent='flex-start' alignItems='center'>
+                    <StyledMIcon size={32} name='info' color={theme.colors.cyan[500]} />
+                    <StyledText paddingHorizontal={8} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.bold} fontSize={theme.fontSize.large} color={theme.colors.gray[800]}>
+                        Welcome to Emira
+                    </StyledText>
+                </XStack>
+                <StyledText fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.medium} color={theme.colors.gray[800]}>
+                    Get started quickly! Tap Sample User to generate dummy User to see a sample of what the app can do. Feel free to explore the features!.
+                </StyledText>
+            </YStack>
+        )
+    }
+
     return (
         <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
             <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
@@ -102,13 +147,18 @@ const Keypad = () => {
                     <RenderHeader />
                 </StyledHeader.Full>
             </StyledHeader>
-            <RenderLockIcon />
-            {
-                recovery_password && (
-                    <Notice />
-                )
-            }
             <YStack flex={1} justifyContent='center' alignItems='center'>
+                <RenderLockIcon />
+                {
+                    recovery_password && (
+                        <ResetPasswordNotice />
+                    )
+                }
+                {
+                    !purchase_status && !recovery_password && (
+                        <Notice />
+                    )
+                }
 
                 <XStack marginBottom={20}>
                     {[0, 1, 2, 3].map((_, index) => (
@@ -120,12 +170,12 @@ const Keypad = () => {
                     ))}
                 </XStack>
                 {
-                    !purchase_status || recovery_password && (
+                    (!purchase_status || recovery_password) && (
                         <StyledText color={theme.colors.gray[400]} fontFamily={fontStyles.Roboto_Regular} fontSize={theme.fontSize.normal} fontWeight={theme.fontWeight.normal} >
                             1234
                         </StyledText>
                     )
-                }   
+                }
                 <StyledSpacer marginVertical={8} />
                 <XStack flexWrap='wrap' justifyContent='center' alignItems='center'>
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num, index) => (
@@ -157,6 +207,20 @@ const Keypad = () => {
                         </StyledText>
                     </StyledButton>
                 </XStack>
+                <StyledSpacer marginVertical={8} />
+                {
+                    purchase_status && (
+                        <XStack justifyContent='flex-end' alignItems='center'>
+                            <StyledButton link backgroundColor={theme.colors.cyan[500]} onPress={() => setRecovery_password(true)} >
+                                <StyledText paddingHorizontal={20} fontFamily={fontStyles.Roboto_Regular}
+                                    fontSize={theme.fontSize.normal}
+                                    fontWeight={theme.fontWeight.normal} color={theme.colors.gray[400]}>
+                                    Forgot password
+                                </StyledText>
+                            </StyledButton>
+                        </XStack>
+                    )
+                }
             </YStack>
             {
                 (loading) && (

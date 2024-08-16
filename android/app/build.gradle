@@ -84,7 +84,7 @@ android {
         applicationId "com.suftnet.emira"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
+        versionCode 4
         versionName "1.0"
         missingDimensionStrategy "store", "play"
     }   
@@ -100,7 +100,7 @@ android {
           release {
             storeFile file('emira.jks')
             storePassword "Kcmkcm12345!"
-            keyAlias "emira-alias"
+            keyAlias "muniz-alias"
             keyPassword "Kcmkcm12345!"
         }
     }

@@ -70,8 +70,8 @@ const PurchaseSuccess = () => {
                     fontSize={theme.fontSize.normal}
                     textAlign='center'
                 >
-                    We appreciate your support and are thrilled to have you on board. Please note that all sample Restaurant data will be deleted to ensure a clean experience.
-                    We recommend updating your Restaurant and User account details.
+                    We appreciate your support and are thrilled to have you on board. Please note that all sample data will be deleted to ensure a clean experience.
+                    We recommend updating your User account details.
                 </StyledText>
                 <StyledSpacer marginVertical={8} />
                 <XStack
@@ -94,7 +94,7 @@ const PurchaseSuccess = () => {
                         color={theme.colors.gray[600]}
                         fontSize={theme.fontSize.normal}
                     >
-                        Clear Sample Restaurant data
+                        Clear Sample data
                     </StyledText>
                     
                 </XStack>
