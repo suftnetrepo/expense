@@ -30,13 +30,24 @@ import ExpenseBarChart from './home/barChart';
 import RecentExpenses from './home/recentExpense';
 import { useInAppPurchase } from '../hooks/useInAppPurchase';
 import { ScrollView } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Home = () => {
   const navigate = useNavigation();
   const { purchaseHandler } = useInAppPurchase();
   const { user } = useAppContext();
+  const [key, setKey] = useState(false)
   const [period, setPeriod] = useState("D")
   const { payment_status, purchase_status } = useSelector(() => state.get());
+
+  useFocusEffect(
+    React.useCallback(() => {        
+      setKey(true)
+      return () => {   
+        setKey(false)
+      };
+    }, [])
+  );
   
   const RenderHeader = () => {
     return (
@@ -127,21 +138,21 @@ const Home = () => {
         </StyledHeader.Full>
       </StyledHeader> 
       <StyledSpacer marginVertical={4} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView key={key} showsVerticalScrollIndicator={false}>
         <YStack flex={1} marginHorizontal={8}>
           <StyledToggleSwitch onPress={(label) => setPeriod(label)} />
           <StyledSpacer marginVertical={4} />
-          {
-            ["M", "Y"].includes(period) && (
-              <ExpenseChart period={period} />
-            )
-          }
           {
             ["D", "W"].includes(period) && (
               <ExpenseBarChart period={period} />
             )
           }
-          <RecentExpenses />
+          {
+            ["M", "Y"].includes(period) && (
+              <ExpenseChart  period={period} />
+            )
+          }          
+          <RecentExpenses  />
         </YStack>    
       </ScrollView>        
       {payment_status &&

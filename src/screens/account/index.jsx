@@ -17,7 +17,7 @@ const Account = () => {
   const { user } = useAppContext()
   const [isDialogVisible, setIsDialogVisible] = useState(false)
 
-  const RenderRow = ({ icon = 'account-circle', title, screen }) => {
+  const RenderRow = ({ icon = 'account-circle', title, screen, from = "", expense="" }) => {
     return (
       <XStack borderRadius={16} marginHorizontal={8} marginBottom={4} backgroundColor={theme.colors.gray[1]} justifyContent='flex-start' alignItems='center' paddingVertical={8} paddingHorizontal={8}>
         <StyledMIcon size={32} name={icon} color={theme.colors.gray[800]} onPress={() => { }} />
@@ -26,7 +26,10 @@ const Account = () => {
           {title}
         </StyledText>
         <StyledSpacer flex={1} />
-        <StyledMIcon size={32} name='chevron-right' color={theme.colors.gray[600]} onPress={() => screen && navigator.navigate(screen)} />
+        <StyledMIcon size={32} name='chevron-right' color={theme.colors.gray[600]} onPress={() => screen && navigator.navigate(screen, {
+          from,
+          expense
+        })} />
       </XStack>
     )
   }

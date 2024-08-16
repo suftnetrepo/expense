@@ -76,6 +76,7 @@ export const generateUser = () => {
     pass_code: 1234,
     status: 1,
     role: 'user',
+    currency: '£',
   };
 };
 

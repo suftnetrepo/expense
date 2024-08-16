@@ -66,11 +66,12 @@ const useInsertUser = () => {
 		role: string,
 		first_name: string,
 		last_name: string,
+		currency: string,
 		pass_code: number
 	) => {
 		setData((prev) => ({ ...prev, loading: true }));
 		try {
-			const user = await insertUser(first_name, last_name, username, password, role, pass_code);		
+			const user = await insertUser(first_name, last_name, username, password, role, currency, pass_code);		
 			setData({
 				data: user,
 				error: null,
@@ -115,12 +116,13 @@ const useUpdateUser = () => {
 		role: string,
 		first_name: string,
 		last_name: string,
-		pass_code: number
+		pass_code: number,
+		currency: string,
 	) => {
 		setData((prev) => ({ ...prev, loading: true }));
 
 		try {
-			const user = await updateUser(first_name, last_name, user_id, username, password, role, pass_code);
+			const user = await updateUser(first_name, last_name, user_id, username, password, role, currency, pass_code);
 			setData({
 				data: user,
 				error: null,

@@ -24,11 +24,12 @@ import { formatCurrency } from '../../utils/help';
 
 const ExpenseBarChart = ({ period }) => {
     const { user } = useAppContext()
-    const { data } = useWeeklyTransactions();
+    const { data } = useWeeklyTransactions(); 
     const { trend, dailyTransaction } = useTransactionTrend()
     const { data: expenseData } = useAggregates()
     const labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
+   
     const chartWeekly = useCallback(() => {
         const colors = ['#FF6347', '#FFA07A', '#FFD700', '#ADFF2F', '#00FA9A', '#00CED1', '#4682B4']; // Example colors for each day
         const chartData = labels.map((label, index) => {
@@ -58,7 +59,7 @@ const ExpenseBarChart = ({ period }) => {
     }, [data, labels]);
 
     return (
-        <YStack                 
+        <YStack                         
             justifyContent="flex-start"
             alignItems="flex-start"
             backgroundColor={theme.colors.gray[1]}

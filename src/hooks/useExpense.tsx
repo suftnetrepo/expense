@@ -136,10 +136,23 @@ const useAllExpenses = () => {
 		});
 	}
 
+	const deleteRefresh = (expense_id: string) => {
+		setData(prev => {
+			if (Array.isArray(prev.data)) {
+				return {
+					...prev,
+					data: prev.data.filter(expense => expense.expense_id !== expense_id),
+				};
+			}
+			return prev;
+		});
+	};
+
 	return {
 		...data,
 		loadHandler,
 		resetHandler,
+		deleteRefresh,
 		loadExpensesByDateRange		
 	};
 };

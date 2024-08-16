@@ -6,13 +6,12 @@ import { queryAllCategories, queryCategoriesByStatus, queryCategoryById, deleteC
 import { Category } from "../model/types";
 
 interface Initialize {
-	data: Category[] | null | Category | [] | boolean;
+	data: Category[] | null | Category;
 	error: Error | null;
 	loading: boolean;
 }
 
-const useCategories = () => {
-	const [hasMore, setHasMore] = useState(true);
+const useCategories = () => {	
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
@@ -22,7 +21,7 @@ const useCategories = () => {
 	async function loadHandler() {
 		
 		try {
-			const result = await queryAllCategories();
+			const result = await queryAllCategories();		
 			setData(prev => {			
 				return {
 					...prev,
@@ -52,10 +51,41 @@ const useCategories = () => {
 		});
 	}	
 
+	const deleteRefresh = (category_id: string) => {		
+		setData(prev => {			
+			if (Array.isArray(prev.data)) {
+				return {
+					...prev,
+					data: prev.data.filter(category => category.category_id !== category_id),
+				};
+			}			
+			return prev;
+		});
+	};
+
+	const updateRefresh = (category_id: string, status: number) => {
+		setData(prev => {
+			if (Array.isArray(prev.data)) {
+				return {
+					...prev,
+					data: prev.data.map(category =>
+						category.category_id === category_id
+							? { ...category, status: status }
+							: category
+					),
+				};
+			}
+			return prev;
+		});
+	};
+
 	return {
 		...data,		
 		loadHandler,
-		resetHandler		
+		resetHandler,
+		deleteCategory,
+		deleteRefresh, 
+		updateRefresh		
 	};
 };
 

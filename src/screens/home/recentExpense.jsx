@@ -7,7 +7,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState } from 'react';
 import {
     YStack,
     XStack,
@@ -24,10 +24,10 @@ import { useRecentExpenses } from '../../hooks/useExpense';
 import { StyledMIcon } from '../../components/icon';
 
 const RecentExpenses=()=> {
-    const { user } = useAppContext()
+    const { user } = useAppContext() 
     const { data } = useRecentExpenses()
-
-    const RenderCard = React.memo(({ item }) => {     
+   
+    const RenderCard = ({ item }) => {     
         return (
             <StyledStack borderLeftColor={item.category.color_code} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
                 paddingVertical={8} justifyContent='space-between' marginBottom={8} gap={8} borderRadius={16} alignItems='center'>
@@ -69,7 +69,7 @@ const RecentExpenses=()=> {
                 </XStack>
             </StyledStack>
         );
-    });
+    };
 
     return (
         <YStack flex={1}  backgroundColor={theme.colors.gray[100]}>
@@ -78,7 +78,7 @@ const RecentExpenses=()=> {
                     Recent Expenses
                 </StyledText>
             }></StyledSeparator>
-           <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView  showsVerticalScrollIndicator={false}>
             {
                 data.map((item, index)=> (
                     <RenderCard
@@ -87,8 +87,7 @@ const RecentExpenses=()=> {
                     />
                 ))
             }
-           </ScrollView> 
-            
+           </ScrollView>             
         </YStack>
     )
 }

@@ -52,14 +52,14 @@ const Category = () => {
   const { from, expense } = route.params
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [category, setCategory] = useState();
-  const { data, error, loading, loadHandler, resetHandler } = useCategories();
+  const { data, error, loading, loadHandler, resetHandler, refresh, updateRefresh } = useCategories();
   const { deleteCategory, error: deleteError } = useDeleteCategory();
   const { updateSingleCategoryHandler } = useUpdateCategory();
 
   const onConfirm = useCallback(() => {
     deleteCategory(category?.category_id).then(async (result) => {
       if (result) {
-        loadHandler();
+        refresh(category?.category_id);
       }
       setIsDialogVisible(false);
     });
@@ -77,7 +77,7 @@ const Category = () => {
   const onUpdateStatus = (item) => {
     updateSingleCategoryHandler(item.category_id, (item.status === 1 ? 0 : 1)).then((result) => {
       if (result) {
-        loadHandler();
+        updateRefresh(item.category_id, (item.status === 1 ? 0 : 1));
       }
     });
   };

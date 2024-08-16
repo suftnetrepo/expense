@@ -5,11 +5,11 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/jsx-key */
 /* eslint-disable prettier/prettier */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { YStack, XStack, StyledConfirmDialog, StyledButton, StyledInput, StyledCycle, StyledBadge, StyledHeader, StyledSafeAreaView, StyledSpinner, StyledOkDialog, StyledSpacer, StyledText } from 'fluent-styles';
 import { theme, fontStyles } from '../../configs/theme';
 import { StyledMIcon } from '../../components/icon';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FlatList } from 'react-native';
 import { dateConverter, formatCurrency, toWordCase } from '../../utils/help';
@@ -34,7 +34,7 @@ const RenderCard = React.memo(({ item, onDelete, onEdit }) => {
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <StyledStack borderLeftColor={item.category.color_code} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
+      <StyledStack borderLeftColor={item.category?.color_code || theme.colors.gray[300]} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
         paddingVertical={8} justifyContent='space-between' marginBottom={8} gap={8} borderRadius={16} alignItems='center'>
         <YStack flex={2}>
           <XStack alignItems='center' justifyContent='flex-start'>
@@ -87,9 +87,15 @@ const Expense = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
-  const { data, error, loading, loadHandler, resetHandler, loadExpensesByDateRange } = useAllExpenses();
+  const { data, error, loading, loadHandler, resetHandler, loadExpensesByDateRange, deleteRefresh } = useAllExpenses();
   const { deleteHandler, error: deleteError } = useDeleteExpense();
-    
+
+  useEffect(() => {
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1);
+    setStartDate(currentDate)
+  }, [])
+
   const handleStartDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
     setShowStartPicker(false);
@@ -102,14 +108,15 @@ const Expense = () => {
     setEndDate(currentDate);
   };
 
-  const handleFilter = async () => {    
+  const handleFilter = async () => {
     setShowFilter(!showFilter)
+    await loadHandler()
   }
 
   const onConfirm = useCallback(() => {
-    deleteHandler(expense?.expense_id).then(async (result) => {   
+    deleteHandler(expense?.expense_id).then(async (result) => {
       if (result) {
-        loadHandler()
+        deleteRefresh(expense?.expense_id)
       }
       setIsDialogVisible(false);
     });
@@ -128,7 +135,7 @@ const Expense = () => {
       }
     });
   };
- 
+
   const RenderDatePicker = () => {
     return (
       <YStack marginHorizontal={8}>
@@ -182,7 +189,13 @@ const Expense = () => {
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.navigate("bottom-tabs", { screen: 'Home' })} title='Expense' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'bottom-tabs', state: { routes: [{ name: 'Home' }] } }],
+          })
+        )
+        } title='Expense' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} rightIcon={
@@ -213,9 +226,9 @@ const Expense = () => {
           <FlatList
             data={data}
             initialNumToRender={5}
-            maxToRenderPerBatch={5}           
-            showsVerticalScrollIndicator={false}            
-            keyExtractor={(item, index) => `${item.expense_id}-${index}`} 
+            maxToRenderPerBatch={5}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => `${item.expense_id}-${index}`}
             renderItem={({ item }) => (
               <RenderCard
                 item={item}
@@ -223,7 +236,7 @@ const Expense = () => {
                 onEdit={() => onEdit(item)}
               />
             )}
-            extraData={data.length}           
+            extraData={data.length}
           />
         </GestureHandlerRootView>
       </YStack>

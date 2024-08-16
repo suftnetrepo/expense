@@ -264,7 +264,6 @@ async function getExpenseSums() {
   startOfWeek.setHours(0, 0, 0, 0);
 
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
   const startOfYear = new Date(now.getFullYear(), 0, 1);
 
   const weeklySum = realm
@@ -282,12 +281,8 @@ async function getExpenseSums() {
     .filtered('date >= $0', startOfYear)
     .sum('amount');
 
-  const weeklyData = getWeeklyData(realm, startOfWeek);
-  
-  const monthlyData = getMonthlyData(realm);
-
-  console.log('...............monthlyData', monthlyData);
-
+  const weeklyData = getWeeklyData(realm, startOfWeek);  
+  const monthlyData = getMonthlyData(realm); 
   const yearlyData = getYearlyData(realm, startOfYear);
 
   return {
