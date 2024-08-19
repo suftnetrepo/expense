@@ -35,7 +35,7 @@ const colorPalettes = {
   blueGray: ['#475569', '#334155'],
 };
 
-const userNames = ['Alice', 'Bob', 'Charlie', 'Diana'];
+const userNames = ['Alice'];
 
 const randomColor = () => {
   const colors = Object.values(colorPalettes);

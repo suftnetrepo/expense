@@ -35,10 +35,10 @@ const EditUser = () => {
       return false
     }
 
-    await updateUser(user.user_id, fields.username, fields.password, fields.role, fields.first_name, fields.last_name, parseInt(fields.pass_code)).then(async (result) => {    
+    await updateUser(user.user_id, fields.username, fields.password, fields.role, fields.first_name, fields.last_name, parseInt(fields.pass_code), fields.currency).then(async (result) => {
       result && (
-        navigator.reset({   
-          key : 'users',    
+        navigator.reset({
+          key: 'users',
           index: 0,
           routes: [{ name: 'users' }],
         })
@@ -49,7 +49,7 @@ const EditUser = () => {
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={()=> navigator.goBack()} title='Edit User' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.goBack()} title='Edit User' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />
@@ -95,6 +95,23 @@ const EditUser = () => {
             onChangeText={(text) => setFields({ ...fields, last_name: text })}
             error={!!errorMessages?.last_name}
             errorMessage={errorMessages?.last_name?.message}
+          />
+          <StyledInput
+            label={'Currency'}
+            keyboardType='default'
+            placeholder='Enter your currency'
+            returnKeyType='next'
+            maxLength={3}
+            fontSize={theme.fontSize.small}
+            borderColor={theme.colors.yellow[800]}
+            backgroundColor={theme.colors.gray[1]}
+            borderRadius={32}
+            paddingHorizontal={8}
+            value={fields.currency}
+            placeholderTextColor={theme.colors.gray[400]}
+            onChangeText={(text) => setFields({ ...fields, currency: text })}
+            error={!!errorMessages?.currency}
+            errorMessage={errorMessages?.currency?.message}
           />
           <StyledInput
             label={'Username'}

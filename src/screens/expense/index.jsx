@@ -195,7 +195,7 @@ const Expense = () => {
             routes: [{ name: 'bottom-tabs', state: { routes: [{ name: 'Home' }] } }],
           })
         )
-        } title='Expense' icon cycleProps={{
+        } title='Expenses' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} rightIcon={

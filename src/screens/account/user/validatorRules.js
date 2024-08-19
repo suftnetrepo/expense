@@ -6,6 +6,7 @@ const reset = {
   last_name: "",
   username: "",
   password: '',
+  currency: '£',
   role: 'admin',
   pass_code: '1234'
 }
@@ -39,6 +40,16 @@ const userRules = {
       {
         pattern: /^.{0,20}$/,
         message: 'username must be no more than 50 characters'
+      }
+    ],
+    currency: [
+      {
+        pattern: /^.+$/,
+        message: 'currency is required'
+      },
+      {
+        pattern: /^.{0,20}$/,
+        message: 'currency must be no more than 3 characters'
       }
     ],
     password: [

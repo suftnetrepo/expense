@@ -29,7 +29,7 @@ const AddUser = () => {
       setFields(userRules.reset)
     }   
 
-    await insertUser(fields.username, fields.password, fields.role, fields.first_name, fields.last_name, parseInt(fields.pass_code)).then(async (result) => {
+    await insertUser(fields.username, fields.password, fields.role, fields.first_name, fields.last_name,fields.currency, parseInt(fields.pass_code)).then(async (result) => {
       result && handleResult()
     })
 
@@ -88,6 +88,23 @@ const AddUser = () => {
             onChangeText={(text) => setFields({ ...fields, last_name: text })}
             error={!!errorMessages?.last_name}
             errorMessage={errorMessages?.last_name?.message}
+          />
+          <StyledInput
+            label={'Currency'}
+            keyboardType='default'
+            placeholder='Enter your currency'
+            returnKeyType='next'
+            maxLength={3}
+            fontSize={theme.fontSize.small}
+            borderColor={theme.colors.yellow[800]}
+            backgroundColor={theme.colors.gray[1]}
+            borderRadius={32}
+            paddingHorizontal={8}
+            value={fields.currency}
+            placeholderTextColor={theme.colors.gray[400]}
+            onChangeText={(text) => setFields({ ...fields, currency: text })}
+            error={!!errorMessages?.currency}
+            errorMessage={errorMessages?.currency?.message}
           />
           <StyledInput
             label={'Username'}
