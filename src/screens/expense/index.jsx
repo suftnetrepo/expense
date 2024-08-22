@@ -13,34 +13,21 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FlatList } from 'react-native';
 import { dateConverter, formatCurrency, toWordCase } from '../../utils/help';
-import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useDeleteExpense, useAllExpenses } from '../../hooks/useExpense';
 import { StyledStack } from '../../components/stack';
 import { DownloadExpense } from './downloadPayment';
 import { useAppContext } from '../../hooks/appContext';
 
-const RenderCard = React.memo(({ item, onDelete, onEdit }) => {
-  const renderRightActions = () => (
-    <XStack justifyContent='flex-end' alignItems='center' paddingHorizontal={8}>
-      <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
-        <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[800]} onPress={onDelete} />
-      </StyledCycle>
-      <StyledSpacer marginHorizontal={4} />
-      <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
-        <StyledMIcon size={24} name='edit' color={theme.colors.gray[600]} onPress={onEdit} />
-      </StyledCycle>
-    </XStack>
-  );
-
+const RenderCard = React.memo(({ item, onDelete, onEdit, currency }) => {
+  
   return (
-    <Swipeable renderRightActions={renderRightActions}>
-      <StyledStack borderLeftColor={item.category?.color_code || theme.colors.gray[300]} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
+    <StyledStack borderLeftColor={item?.category?.color_code || theme.colors.gray[300]} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
         paddingVertical={8} justifyContent='space-between' marginBottom={8} gap={8} borderRadius={16} alignItems='center'>
         <YStack flex={2}>
           <XStack alignItems='center' justifyContent='flex-start'>
             <YStack flex={1}>
               <StyledText paddingHorizontal={5} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
-                {toWordCase(item.category.name)}
+                {toWordCase(item?.category?.name)}
               </StyledText>
               <XStack flex={1}>
                 <XStack alignItems='center' justifyContent='flex-start'>
@@ -55,25 +42,31 @@ const RenderCard = React.memo(({ item, onDelete, onEdit }) => {
                   >
                     {dateConverter(item.date.toISOString())}
                   </StyledBadge>
+                  <StyledBadge
+                    color={theme.colors.green[800]}
+                    backgroundColor={theme.colors.green[100]}
+                    fontWeight={theme.fontWeight.medium}
+                    fontSize={theme.fontSize.normal}
+                    paddingVertical={1}
+                    paddingHorizontal={10}
+                  >
+                    {formatCurrency(currency || "£", item.amount)}
+                  </StyledBadge>
                 </XStack>
               </XStack>
             </YStack>
           </XStack>
         </YStack>
         <XStack flex={1} justifyContent='flex-end' alignItems='center'>
-          <StyledBadge
-            color={theme.colors.green[800]}
-            backgroundColor={theme.colors.green[100]}
-            fontWeight={theme.fontWeight.medium}
-            fontSize={theme.fontSize.normal}
-            paddingVertical={1}
-            paddingHorizontal={10}
-          >
-            {formatCurrency("£", item.amount)}
-          </StyledBadge>
+           <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
+            <StyledMIcon size={24} name='edit' color={theme.colors.gray[600]} onPress={onEdit} />
+          </StyledCycle>
+           <StyledSpacer marginHorizontal={4} />
+          <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
+            <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[800]} onPress={onDelete} />
+          </StyledCycle>         
         </XStack>
       </StyledStack>
-    </Swipeable>
   );
 });
 
@@ -222,15 +215,15 @@ const Expense = () => {
       }
 
       <YStack flex={1} paddingHorizontal={8} paddingVertical={8} backgroundColor={theme.colors.gray[100]}>
-        <GestureHandlerRootView>
-          <FlatList
+       <FlatList
             data={data}
-            initialNumToRender={5}
+            initialNumToRender={10}
             maxToRenderPerBatch={5}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => `${item.expense_id}-${index}`}
             renderItem={({ item }) => (
               <RenderCard
+                currency = {user.currency}
                 item={item}
                 onDelete={() => onDelete(item)}
                 onEdit={() => onEdit(item)}
@@ -238,7 +231,6 @@ const Expense = () => {
             )}
             extraData={data.length}
           />
-        </GestureHandlerRootView>
       </YStack>
       {(error || deleteError) && (
         <StyledOkDialog title={error?.message || deleteError?.message} description='Please try again' visible={true} onOk={resetHandler} />

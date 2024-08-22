@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { queryExpensesByDateRange, insertExpense, updateExpense, deleteExpense, queryExpensesByPages, queryRecentExpenses, queryAllExpenses } from "../model/expense";
 import { Expense } from "../model/types";
+import { useFocus } from "./useFocusEffect";
 
 interface Initialize {
 	data: Expense[] | null | Expense | [] | boolean;
@@ -81,6 +82,7 @@ const useExpenses = (currentPage: number) => {
 };
 
 const useAllExpenses = () => {
+	const { key } = useFocus()
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
@@ -125,8 +127,11 @@ const useAllExpenses = () => {
 	}
 
 	useEffect(() => {
-		loadHandler();
-	}, []);
+		async function load() {
+			key && await loadHandler()
+		}
+		load()
+	}, [key])
 
 	const resetHandler = () => {
 		setData({

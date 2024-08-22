@@ -8,6 +8,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { categoryRules } from "./validatorRules";
 import { useUpdateCategory } from "../../../hooks/useCategory";
+import ColorPicker from "../../../components/colorPicker";
 
 const EditCategory = () => {
   const navigator = useNavigation()
@@ -16,7 +17,7 @@ const EditCategory = () => {
   const [fields, setFields] = useState(categoryRules.fields)
   const { updateCategory, error, loading, resetHandler } = useUpdateCategory()
   const { category } = route.params
- 
+
   useEffect(() => {
     setFields((pre) => {
       return {
@@ -36,11 +37,7 @@ const EditCategory = () => {
 
     await updateCategory(fields.category_id, fields.name, fields.status, fields.color_code).then(async (result) => {
       result && (
-        navigator.reset({
-          key: 'categories',
-          index: 0,
-          routes: [{ name: 'categories' }],
-        })
+        navigator.goBack()
       )
     })
   }
@@ -48,11 +45,7 @@ const EditCategory = () => {
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.reset({
-          key: "categories",
-          index: 0,
-          routes: [{ name: 'categories' }]
-        })} title='Edit Category' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.goBack()} title='Edit Category' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />
@@ -65,7 +58,7 @@ const EditCategory = () => {
       >
         <StyledSpacer marginVertical={8} />
         <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-         
+          <ColorPicker color={theme.colors.purple[900]} onPress={(color) => setFields({ ...fields, color_code: color })} />
           <StyledInput
             label={'Name'}
             keyboardType='default'

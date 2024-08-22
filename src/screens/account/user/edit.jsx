@@ -37,11 +37,7 @@ const EditUser = () => {
 
     await updateUser(user.user_id, fields.username, fields.password, fields.role, fields.first_name, fields.last_name, parseInt(fields.pass_code), fields.currency).then(async (result) => {
       result && (
-        navigator.reset({
-          key: 'users',
-          index: 0,
-          routes: [{ name: 'users' }],
-        })
+        navigator.goBack()
       )
     })
   }

@@ -29,13 +29,13 @@ const RecentExpenses=()=> {
    
     const RenderCard = ({ item }) => {     
         return (
-            <StyledStack borderLeftColor={item.category.color_code} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
+            <StyledStack borderLeftColor={item?.category?.color_code} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
                 paddingVertical={8} justifyContent='space-between' marginBottom={8} gap={8} borderRadius={16} alignItems='center'>
-                <YStack flex={2}>
+                <YStack flex={1}>
                     <XStack alignItems='center' justifyContent='flex-start'>
                         <YStack flex={1}>
                             <StyledText paddingHorizontal={5} fontFamily={fontStyles.Roboto_Regular} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
-                                {toWordCase(item.category.name)}
+                                {toWordCase(item?.category?.name)}
                             </StyledText>
                             <XStack flex={1}>
                                 <XStack alignItems='center' justifyContent='flex-start'>

@@ -38,11 +38,7 @@ const AddUser = () => {
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.reset({
-          key: "users",
-          index: 0,
-          routes: [{ name: 'users' }]
-        })} title='Add User' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.goBack()} title='Add User' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />

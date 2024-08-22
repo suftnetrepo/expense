@@ -6,7 +6,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { validate, StyledSpinner, YStack, XStack, StyledOkDialog, StyledCycle, StyledHeader, StyledSafeAreaView, StyledSpacer, StyledText, StyledButton } from 'fluent-styles';
 import { fontStyles, theme } from "../../configs/theme";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { expenseRules } from "./validatorRules";
@@ -36,7 +36,7 @@ const RenderButton = ({ category, fields, index, handleSelectItem, theme }) => {
           <StyledSpacer marginHorizontal={4} />
         </>
       )}
-     
+
       <StyledText
         fontFamily={fontStyles.Roboto_Regular}
         fontSize={theme.fontSize.small}
@@ -48,12 +48,11 @@ const RenderButton = ({ category, fields, index, handleSelectItem, theme }) => {
     </XStack>
   );
 };
-
 export const RenderCategories = ({ from, expense, navigator, categories, setFields, fields, errorMessages }) => {
   const scrollViewRef = useRef(null);
 
   const handleSelectItem = (index) => {
-    const itemWidth = 100; 
+    const itemWidth = 100;
     const scrollToX = index * itemWidth;
 
     scrollViewRef.current.scrollTo({ x: scrollToX, animated: true });
@@ -129,15 +128,18 @@ const AddExpense = () => {
     })
   }
 
+  const backHandler = () => { 
+    if (navigator.canGoBack()) {
+      navigator.goBack()
+    } else {
+      navigator.navigate("bottom-tabs", { screen: 'Expense' })
+    }
+  }
+
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{ name: 'bottom-tabs', state: { routes: [{ name: 'Expense' }] } }],
-          })
-        )} title='Add Expense' icon cycleProps={{
+        <StyledHeader.Header onPress={() => backHandler()} title='Add Expense' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />

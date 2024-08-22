@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { queryAllCategories, queryCategoriesByStatus, queryCategoryById, deleteCategory, insertCategory, updateSingleCategory, updateCategory } from "../model/category";
 import { Category } from "../model/types";
+import { useFocus } from "./useFocusEffect";
 
 interface Initialize {
 	data: Category[] | null | Category;
@@ -12,6 +13,7 @@ interface Initialize {
 }
 
 const useCategories = () => {	
+	const { key } = useFocus()
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
@@ -39,10 +41,13 @@ const useCategories = () => {
 		}
 	}
 
-	useEffect(() => {		
-		loadHandler();
-	}, []);
-
+	useEffect(() => {
+		async function load() {
+			key && await loadHandler()
+		}
+		load()
+	}, [key])
+	
 	const resetHandler = () => {
 		setData({
 			data: null,

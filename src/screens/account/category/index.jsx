@@ -14,52 +14,47 @@ import { useCategories, useDeleteCategory, useUpdateCategory } from '../../../ho
 import { FlatList } from 'react-native';
 import { toWordCase } from '../../../utils/help';
 import { StyledStack } from '../../../components/stack';
-import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const RenderCard = React.memo(({ item, onDelete, onUpdateStatus, onEdit }) => {
   return (
-    <Swipeable renderRightActions={() => (
-      <XStack justifyContent='flex-end' alignItems='center' paddingHorizontal={8}>
+    <StyledStack borderLeftColor={item.color_code || theme.colors.gray[300]} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
+      paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center'>
+      <YStack flex={2}>
+        <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
+          {toWordCase(item.name)}
+        </StyledText>
+      </YStack>
+      <XStack flex={1} justifyContent='flex-end' alignItems='center'>
+         <StyledCycle borderWidth={1} borderColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[400]} backgroundColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[1]}>
+          <StyledMIcon size={32} name={item.status === 1 ? 'done' : 'add'} color={theme.colors.gray[600]} onPress={onUpdateStatus} />
+        </StyledCycle>
+         <StyledSpacer marginHorizontal={4} />
+        <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
+          <StyledMIcon size={24} name='edit' color={theme.colors.gray[600]} onPress={onEdit} />
+        </StyledCycle>
+            <StyledSpacer marginHorizontal={4} />
         <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
           <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[800]} onPress={onDelete} />
-        </StyledCycle>
+        </StyledCycle>              
       </XStack>
-    )}>
-      <StyledStack status={item.status === 1 ? '1' : '0'} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
-        paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center'>
-        <YStack flex={2}>
-          <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
-            {toWordCase(item.name)}
-          </StyledText>
-        </YStack>
-        <XStack flex={1} justifyContent='flex-end' alignItems='center'>
-          <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
-            <StyledMIcon size={24} name='edit' color={theme.colors.gray[600]} onPress={onEdit} />
-          </StyledCycle>
-          <StyledSpacer marginHorizontal={4} />
-          <StyledCycle borderWidth={1} borderColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[400]} backgroundColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[1]}>
-            <StyledMIcon size={32} name={item.status === 1 ? 'done' : 'close'} color={theme.colors.gray[600]} onPress={onUpdateStatus} />
-          </StyledCycle>
-        </XStack>
-      </StyledStack>
-    </Swipeable>
+    </StyledStack>
   );
 });
 
 const Category = () => {
   const navigator = useNavigation();
   const route = useRoute()
-  const { from, expense } = route.params
+  const params = route.params
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [category, setCategory] = useState();
-  const { data, error, loading, loadHandler, resetHandler, refresh, updateRefresh } = useCategories();
+  const { data, error, loading, loadHandler, resetHandler, deleteRefresh, updateRefresh } = useCategories();
   const { deleteCategory, error: deleteError } = useDeleteCategory();
   const { updateSingleCategoryHandler } = useUpdateCategory();
 
   const onConfirm = useCallback(() => {
     deleteCategory(category?.category_id).then(async (result) => {
       if (result) {
-        refresh(category?.category_id);
+        deleteRefresh(category?.category_id);
       }
       setIsDialogVisible(false);
     });
@@ -74,6 +69,20 @@ const Category = () => {
     navigator.navigate("edit-category", { category: item });
   };
 
+  const onBack = () => {
+    if (params?.from) {
+      const expense = params.expense
+      navigator.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: params.from, params: { expense } }],
+        })
+      );
+    } else {
+      navigator.navigate("bottom-tabs", { screen: 'Settings' })
+    }
+  }
+
   const onUpdateStatus = (item) => {
     updateSingleCategoryHandler(item.category_id, (item.status === 1 ? 0 : 1)).then((result) => {
       if (result) {
@@ -81,23 +90,12 @@ const Category = () => {
       }
     });
   };
- 
+
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }}>
         <StyledHeader.Header
-          onPress={() => {             
-            if (from) {
-              navigator.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{ name: from, params: { expense } }],
-                })
-              );
-            }else {
-              navigator.goBack()
-            }
-           }}
+          onPress={() => onBack()}
           title='Categories'
           icon
           cycleProps={{
@@ -108,29 +106,27 @@ const Category = () => {
             <XStack flex={1} justifyContent='flex-end' alignItems='center' paddingHorizontal={16}>
               <StyledCycle borderWidth={1} borderColor={theme.colors.cyan[400]} backgroundColor={theme.colors.cyan[500]}>
                 <StyledMIcon size={24} name='add' color={theme.colors.gray[1]} onPress={() => navigator.navigate("add-category")} />
-              </StyledCycle>            
+              </StyledCycle>
             </XStack>
           }
         />
       </StyledHeader>
       <YStack flex={1} paddingHorizontal={8} paddingVertical={8} backgroundColor={theme.colors.gray[100]}>
-        <GestureHandlerRootView>
-          <FlatList
-            data={data}
-            initialNumToRender={20}
-            maxToRenderPerBatch={20}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => `${item.category_id}-${index}`} 
-            renderItem={({ item }) => (
-              <RenderCard
-                item={item}
-                onDelete={() => onDelete(item)}
-                onEdit={() => onEdit(item)}
-                onUpdateStatus={() => onUpdateStatus(item)}
-              />
-            )}          
-          />
-        </GestureHandlerRootView>
+        <FlatList
+          data={data.slice(0, 10)}
+          initialNumToRender={100}
+          maxToRenderPerBatch={20}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => `${item.category_id}-${index}`}
+          renderItem={({ item }) => (
+            <RenderCard
+              item={item}
+              onDelete={() => onDelete(item)}
+              onEdit={() => onEdit(item)}
+              onUpdateStatus={() => onUpdateStatus(item)}
+            />
+          )}
+        />
       </YStack>
       {(error || deleteError) && (
         <StyledOkDialog

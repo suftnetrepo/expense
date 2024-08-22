@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { categoryRules } from "./validatorRules";
 import { useInsertCategory } from "../../../hooks/useCategory";
 import { ShowToast } from "../../../components/toast";
+import ColorPicker from "../../../components/colorPicker";
 
 const AddCategory = () => {
   const navigator = useNavigation()
@@ -27,7 +28,7 @@ const AddCategory = () => {
 
     const handleResult = () => {
       ShowToast("Success", "Category was added successfully")
-      setFields(categoryRules.reset) 
+      setFields(categoryRules.reset)
     }
 
     await insertCategory(fields.name, fields.status, fields.color_code).then(async (result) => {
@@ -40,23 +41,19 @@ const AddCategory = () => {
   return (
     <StyledSafeAreaView backgroundColor={theme.colors.gray[1]}>
       <StyledHeader marginHorizontal={8} statusProps={{ translucent: true }} >
-        <StyledHeader.Header onPress={() => navigator.reset({
-          key: "categories",
-          index: 0,
-          routes: [{ name: 'categories' }]
-        })} title='Add Category' icon cycleProps={{
+        <StyledHeader.Header onPress={() => navigator.goBack()} title='Add Category' icon cycleProps={{
           borderColor: theme.colors.gray[300],
           marginRight: 8
         }} />
       </StyledHeader>
-
       <YStack
         flex={1}
         backgroundColor={theme.colors.gray[100]}
         paddingHorizontal={16}
       >
         <StyledSpacer marginVertical={8} />
-        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>       
+        <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+          <ColorPicker color={theme.colors.purple[900]} onPress={(color) => setFields({ ...fields, color_code: color })} />
           <StyledInput
             label={'Name'}
             keyboardType='default'
@@ -73,7 +70,7 @@ const AddCategory = () => {
             onChangeText={(text) => setFields({ ...fields, name: text })}
             error={!!errorMessages?.name}
             errorMessage={errorMessages?.name?.message}
-          />          
+          />
           <StyledSpacer marginVertical={4} />
           <XStack
             justifyContent='flex-start'

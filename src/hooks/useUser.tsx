@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { queryUsers, insertUser, updateUser, deleteUser, loginUser, loginByPin, createUser, updatePassCode } from "../model/user";
 import { User } from "../model/types";
 import { generateUser } from "../model/seed";
+import { useFocus } from "./useFocusEffect";
 
 interface Initialize {
 	data: User[] | [] | null | User ;
@@ -11,6 +12,7 @@ interface Initialize {
 }
 
 const useUsers = () => {
+	const { key } = useFocus()
 	const [data, setData] = useState<Initialize>({
 		data: [],
 		error: null,
@@ -32,11 +34,14 @@ const useUsers = () => {
 				loading: false,
 			});
 		}
-	}
+	}	
 
-	useEffect(() => {		
-		loadUsers();
-	}, []);
+	useEffect(() => {
+		async function load() {
+			key && await loadUsers()
+		}
+		load()
+	}, [key])
 
 	const resetHandler = () => {
 		setData({
