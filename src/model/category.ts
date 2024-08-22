@@ -193,7 +193,7 @@ const deleteCategory = async (category_id: number): Promise<boolean> => {
     try {
       const products = realm
         .objects('Expense')
-        .filtered('expense_id == $0', category_id);
+        .filtered('category_id == $0', category_id);
       if (products.length > 0) {
         reject(
           new Error(

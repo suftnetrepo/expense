@@ -113,7 +113,7 @@ const Category = () => {
       </StyledHeader>
       <YStack flex={1} paddingHorizontal={8} paddingVertical={8} backgroundColor={theme.colors.gray[100]}>
         <FlatList
-          data={data.slice(0, 10)}
+          data={data}
           initialNumToRender={100}
           maxToRenderPerBatch={20}
           showsVerticalScrollIndicator={false}
