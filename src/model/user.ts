@@ -13,6 +13,7 @@ export interface User {
   role: string;
   currency: string;
   pass_code: number;
+  active?: boolean
 }
 
 const insertUser = async (
@@ -128,6 +129,7 @@ const loginUser = async (username: string, password: string): Promise<User> => {
         .objects<User>('User')
         .filtered('username == $0 AND password == $1', username, password)[0];
       if (user) {
+        user.active = true
         resolve(user);
       } else {
         reject(new Error('Invalid username or password'));
@@ -145,6 +147,7 @@ const loginByPin = async (pin: number): Promise<User> => {
         .objects<User>('User')
         .filtered('pass_code == $0', pin)[0];
       if (user) {
+        user.active = true
         resolve(user);
       } else {
         reject(new Error('Invalid pin'));
@@ -187,7 +190,7 @@ const createUser = async (
         realm.create('User', {
           user_id: guid(),
           ...user,
-        });       
+        });
 
         resolve(true);
       });

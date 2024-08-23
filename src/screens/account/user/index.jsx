@@ -12,16 +12,19 @@ import { useNavigation } from '@react-navigation/native';
 import { useUsers, useDeleteUser } from '../../../hooks/useUser';
 import { FlatList } from 'react-native';
 import { toWordCase } from '../../../utils/help';
+import { useAppContext } from '../../../hooks/appContext';
+import { StyledStack } from '../../../components/stack';
 
 const User = () => {
   const navigator = useNavigation()
+  const { user } = useAppContext()
   const [isDialogVisible, setIsDialogVisible] = useState(false)
-  const [user, setUser] = useState()
+  const [currentUser, setCurrentUser] = useState()
   const { data, error, loading, loadUsers, resetHandler } = useUsers()
   const { deleteUser, error: deleteError, loading: deleting } = useDeleteUser()
- 
+
   const onConfirm = () => {
-    deleteUser(user?.user_id).then(async (result) => {
+    deleteUser(currentUser?.user_id).then(async (result) => {
       result && (
         loadUsers()
       )
@@ -29,16 +32,24 @@ const User = () => {
     })
   }
 
+  const onDelete = (item) => {
+    if (user.user_id !== item.user_id) {
+      setIsDialogVisible(true)
+      setCurrentUser(item)
+    }
+  }
+
   const RenderCard = ({ item }) => {
+    const status = (user.user_id === item.user_id) ? '1': '0'   
     return (
-      <XStack paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
-        paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center' borderWidth={1} borderColor={theme.colors.gray[300]}>
+      <StyledStack status={status} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
+        paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center' >
         <YStack flex={2}>
           <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
             {toWordCase(item.first_name)} {toWordCase(item.last_name)}
           </StyledText>
           <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.normal} fontSize={theme.fontSize.small} color={theme.colors.gray[600]}>
-            {toWordCase(item.role)}
+            {status == 1 ? "online" : "offline"}
           </StyledText>
         </YStack>
         <XStack flex={1} justifyContent='flex-end' alignItems='center'>
@@ -49,14 +60,10 @@ const User = () => {
           </StyledCycle>
           <StyledSpacer marginHorizontal={4} />
           <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
-            <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[600]} onPress={() => {
-              setIsDialogVisible(true)
-              setUser(item)
-            }
-            } />
+            <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[600]} onPress={() => onDelete(item)} />
           </StyledCycle>
         </XStack>
-      </XStack>
+      </StyledStack>
     )
   }
 
