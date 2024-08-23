@@ -43,7 +43,7 @@ const User = () => {
     const status = (user.user_id === item.user_id) ? '1': '0'   
     return (
       <StyledStack status={status} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
-        paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center' >
+        paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center'>
         <YStack flex={2}>
           <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
             {toWordCase(item.first_name)} {toWordCase(item.last_name)}
