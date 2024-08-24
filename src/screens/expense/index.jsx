@@ -103,7 +103,7 @@ const Expense = () => {
 
   const handleFilter = async () => {
     setShowFilter(!showFilter)
-    await loadHandler()
+    showFilter && await loadHandler()
   }
 
   const onConfirm = useCallback(() => {
