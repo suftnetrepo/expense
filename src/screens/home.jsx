@@ -119,8 +119,7 @@ const Home = () => {
         <StyledHeader.Full>
           <RenderHeader />
         </StyledHeader.Full>
-      </StyledHeader> 
-      <StyledSpacer marginVertical={4} />
+      </StyledHeader>     
       <ScrollView key={key} showsVerticalScrollIndicator={false}>
         <YStack flex={1} marginHorizontal={8}>
           <StyledToggleSwitch onPress={(label) => setPeriod(label)} />

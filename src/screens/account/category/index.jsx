@@ -18,24 +18,22 @@ import { StyledStack } from '../../../components/stack';
 const RenderCard = React.memo(({ item, onDelete, onUpdateStatus, onEdit }) => {
   return (
     <StyledStack borderLeftColor={item.color_code || theme.colors.gray[300]} paddingHorizontal={8} backgroundColor={theme.colors.gray[1]}
-      paddingVertical={8} justifyContent='flex-start' marginBottom={8} borderRadius={16} alignItems='center'>
-      <YStack flex={2}>
-        <StyledText paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
-          {toWordCase(item.name)}
-        </StyledText>
-      </YStack>
+      paddingVertical={8} justifyContent='space-between' marginBottom={8} borderRadius={16} alignItems='center'>
+      <StyledText flex={1} paddingHorizontal={8} fontFamily={fontStyles.FontAwesome5_Regular} fontWeight={theme.fontWeight.medium} fontSize={theme.fontSize.normal} color={theme.colors.gray[800]}>
+        {toWordCase(item.name)}
+      </StyledText>
       <XStack flex={1} justifyContent='flex-end' alignItems='center'>
-         <StyledCycle borderWidth={1} borderColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[400]} backgroundColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[1]}>
+        <StyledCycle borderWidth={1} borderColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[400]} backgroundColor={item.status === 1 ? theme.colors.green[100] : theme.colors.gray[1]}>
           <StyledMIcon size={32} name={item.status === 1 ? 'done' : 'add'} color={theme.colors.gray[600]} onPress={onUpdateStatus} />
         </StyledCycle>
-         <StyledSpacer marginHorizontal={4} />
+        <StyledSpacer marginHorizontal={4} />
         <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
           <StyledMIcon size={24} name='edit' color={theme.colors.gray[600]} onPress={onEdit} />
         </StyledCycle>
-            <StyledSpacer marginHorizontal={4} />
+        <StyledSpacer marginHorizontal={4} />
         <StyledCycle borderWidth={1} borderColor={theme.colors.gray[400]}>
           <StyledMIcon size={32} name='delete-outline' color={theme.colors.gray[800]} onPress={onDelete} />
-        </StyledCycle>              
+        </StyledCycle>
       </XStack>
     </StyledStack>
   );

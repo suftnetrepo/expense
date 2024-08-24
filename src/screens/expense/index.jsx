@@ -12,7 +12,7 @@ import { StyledMIcon } from '../../components/icon';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FlatList } from 'react-native';
-import { dateConverter, formatCurrency, toWordCase } from '../../utils/help';
+import { addDayToDate, dateConverter, formatCurrency, toWordCase } from '../../utils/help';
 import { useDeleteExpense, useAllExpenses } from '../../hooks/useExpense';
 import { StyledStack } from '../../components/stack';
 import { DownloadExpense } from './downloadPayment';
@@ -75,8 +75,8 @@ const Expense = () => {
   const { user } = useAppContext()
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [expense, setExpense] = useState();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(addDayToDate(new Date(), -7));
+  const [endDate, setEndDate] = useState(addDayToDate(new Date(), 7));
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
