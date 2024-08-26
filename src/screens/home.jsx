@@ -30,25 +30,16 @@ import ExpenseBarChart from './home/barChart';
 import RecentExpenses from './home/recentExpense';
 import { useInAppPurchase } from '../hooks/useInAppPurchase';
 import { ScrollView } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocus } from '../hooks/useFocusEffect';
 
 const Home = () => {
   const navigate = useNavigation();
   const { purchaseHandler } = useInAppPurchase();
+  const { key } = useFocus()
   const { user } = useAppContext();
-  const [key, setKey] = useState(false)
   const [period, setPeriod] = useState("D")
   const { payment_status, purchase_status } = useSelector(() => state.get());
-
-  useFocusEffect(
-    React.useCallback(() => {        
-      setKey(true)
-      return () => {   
-        setKey(false)
-      };
-    }, [])
-  );
-  
+    
   const RenderHeader = () => {
     return (
       <XStack
